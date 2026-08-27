@@ -1,0 +1,29 @@
+{
+  "name": "qm2-log",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && vite build",
+    "build:single": "tsc --noEmit && vite build --mode single --outDir dist-single",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "@types/leaflet": "^1.9.17",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.5.0",
+    "tailwindcss": "^4.1.11",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-singlefile": "^2.2.0"
+  }
+}

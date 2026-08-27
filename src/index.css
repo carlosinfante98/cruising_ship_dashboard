@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * One hue family (~205–210° sea blue) across both themes; only lightness and
+ * chroma shift between light and dark. Accents are semantic:
+ *   brass   — the ship, the present moment
+ *   reunion — a day she's reachable (matches her Notes-app highlighter purple)
+ *   home    — Boston
+ * Dark-mode brass fails contrast on the light background, so light mode
+ * carries its own darker accent values. Ratios documented in the README.
+ */
+:root {
+  --qm2-bg: hsl(206 60% 97%);
+  --qm2-surface: hsl(206 50% 93%);
+  --qm2-line: hsl(207 30% 80%);
+  --qm2-ink: hsl(210 55% 14%);
+  --qm2-muted: hsl(208 22% 36%);
+  --qm2-sea: hsl(208 90% 32%);
+  --qm2-brass: hsl(35 80% 29%);
+  --qm2-reunion: hsl(276 70% 40%);
+  --qm2-reunion-soft: hsl(276 60% 92%);
+  --qm2-home: hsl(152 80% 24%);
+}
+
+.dark {
+  --qm2-bg: hsl(210 45% 8%);
+  --qm2-surface: hsl(209 40% 12%);
+  --qm2-line: hsl(208 28% 22%);
+  --qm2-ink: hsl(204 40% 91%);
+  --qm2-muted: hsl(206 18% 65%);
+  --qm2-sea: hsl(204 85% 68%);
+  --qm2-brass: hsl(41 70% 64%);
+  --qm2-reunion: hsl(276 75% 78%);
+  --qm2-reunion-soft: hsl(276 40% 20%);
+  --qm2-home: hsl(150 50% 64%);
+}
+
+@theme inline {
+  --color-bg: var(--qm2-bg);
+  --color-surface: var(--qm2-surface);
+  --color-line: var(--qm2-line);
+  --color-ink: var(--qm2-ink);
+  --color-muted: var(--qm2-muted);
+  --color-sea: var(--qm2-sea);
+  --color-brass: var(--qm2-brass);
+  --color-reunion: var(--qm2-reunion);
+  --color-reunion-soft: var(--qm2-reunion-soft);
+  --color-home: var(--qm2-home);
+  --font-display: 'Bodoni Moda', 'Didot', 'Georgia', serif;
+  --font-body: 'Archivo', 'Helvetica Neue', ui-sans-serif, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+body {
+  background-color: var(--qm2-bg);
+  color: var(--qm2-ink);
+  font-family: var(--font-body);
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.leaflet-container {
+  background-color: var(--qm2-surface);
+  font-family: var(--font-body);
+}
+
+@keyframes ship-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--qm2-brass) 55%, transparent); }
+  100% { box-shadow: 0 0 0 14px transparent; }
+}
+
+.ship-dot {
+  animation: ship-pulse 2s ease-out infinite;
+}
