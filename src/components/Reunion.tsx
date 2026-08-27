@@ -1,18 +1,20 @@
-import { nextUsPort, shipState, waitProgress } from '../lib/voyage'
+import { PORTS } from '../lib/itinerary'
+import type { Port } from '../lib/itinerary'
+import { arrivalOf, nextUsPort, shipState, waitProgress } from '../lib/voyage'
 import { daysUntil, longDate, shortDate } from '../lib/format'
 
+/** The emotional centrepiece: when can you next reach her. */
 export function Reunion({ now }: { now: Date }) {
   const port = nextUsPort(now)
   const state = shipState(now)
 
   if (!port) {
     return (
-      <section aria-label="Next reunion" className="rounded-2xl border border-line bg-surface p-6">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-muted">Next reunion</p>
-        <p className="mt-3 font-display text-2xl">
-          No US call in the entered schedule yet — more dates coming.
+      <div className="px-md py-xl">
+        <p className="font-display text-2xl">
+          No US call in the entered schedule yet — more dates to come.
         </p>
-      </section>
+      </div>
     )
   }
 
@@ -22,58 +24,89 @@ export function Reunion({ now }: { now: Date }) {
   const accent = port.home ? 'text-home' : 'text-reunion'
   const bar = port.home ? 'bg-home' : 'bg-reunion'
 
+  const laterCalls = PORTS.filter((p) => p.us && arrivalOf(p) > now && p !== port).slice(0, 4)
+
   return (
-    <section
-      aria-label="Next reunion"
-      className="rounded-2xl border border-line bg-surface p-6 sm:p-8"
-    >
-      <p className="font-mono text-[11px] uppercase tracking-widest text-muted">
-        Next reunion window
-      </p>
-
-      {docked ? (
-        <p className="mt-4 font-display text-3xl font-semibold sm:text-4xl">
-          <span className={accent}>She&rsquo;s reachable right now</span> — docked in {port.flag}{' '}
-          {port.name}{port.home ? ', home' : ''}.
+    <div className="grid gap-lg px-md py-xl lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-2xl">
+      <div>
+        <p className="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">
+          Next reunion window
         </p>
-      ) : (
-        <>
-          <p className="mt-4 font-display text-5xl font-semibold tabular-nums sm:text-7xl">
-            <span className={accent}>{days}</span>
-            <span className="ml-3 text-2xl font-normal text-muted sm:text-3xl">
-              {days === 1 ? 'day' : 'days'}
-            </span>
-          </p>
-          <p className="mt-3 text-lg">
-            until {port.flag} <span className={`font-semibold ${accent}`}>{port.name}</span>
-            {port.home && <span className="text-home"> — home</span>},{' '}
-            {longDate(port.date)}
-          </p>
-        </>
-      )}
 
-      {wait && !docked && (
-        <div className="mt-6">
-          <div
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(wait.progress * 100)}
-            aria-label="Progress through the current wait"
-            className="h-2 overflow-hidden rounded-full bg-bg"
-          >
+        {docked ? (
+          <p className="mt-sm font-display text-4xl leading-tight font-semibold sm:text-5xl">
+            <span className={accent}>She&rsquo;s reachable today</span> — docked in {port.name}
+            {port.home ? ', home' : ''}.
+          </p>
+        ) : (
+          <>
+            <p className="mt-2xs flex items-baseline gap-sm">
+              <span className={`tnum font-display text-7xl leading-none font-semibold sm:text-8xl ${accent}`}>
+                {days}
+              </span>
+              <span className="font-display text-2xl text-muted sm:text-3xl">
+                {days === 1 ? 'day' : 'days'} apart
+              </span>
+            </p>
+            <p className="mt-sm text-lg leading-relaxed">
+              until <span className={`font-semibold ${accent}`}>{port.name}</span>
+              {port.home && <span className="text-home"> — home</span>} on {longDate(port.date)}.
+            </p>
+          </>
+        )}
+
+        {wait && !docked && (
+          <div className="mt-lg">
             <div
-              className={`h-full rounded-full ${bar} transition-[width] duration-700`}
-              style={{ width: `${(wait.progress * 100).toFixed(2)}%` }}
-            />
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(wait.progress * 100)}
+              aria-label="Progress through the current wait"
+              className="h-1.5 w-full overflow-hidden bg-tile"
+            >
+              <div
+                className={`h-full w-full origin-left ${bar} transition-transform duration-700 ease-out`}
+                style={{ transform: `scaleX(${wait.progress.toFixed(4)})` }}
+              />
+            </div>
+            <div className="mt-2xs flex justify-between gap-2xs font-mono text-[10px] tracking-[0.06em] text-muted uppercase">
+              <span>parted {shortDate(wait.fromIso)}</span>
+              <span className="tnum">{Math.round(wait.progress * 100)}%</span>
+              <span>together {shortDate(port.date)}</span>
+            </div>
           </div>
-          <div className="mt-2 flex justify-between font-mono text-[11px] text-muted">
-            <span>parted {shortDate(wait.fromIso)}</span>
-            <span>{Math.round(wait.progress * 100)}%</span>
-            <span>together {shortDate(port.date)}</span>
-          </div>
+        )}
+      </div>
+
+      {laterCalls.length > 0 && (
+        <div className="border-t border-rule pt-sm lg:border-t-0 lg:border-l lg:pt-0 lg:pl-2xl">
+          <p className="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">
+            Then after that
+          </p>
+          <ul className="mt-2xs">
+            {laterCalls.map((p) => (
+              <LaterCall key={`${p.date}-${p.name}`} port={p} now={now} />
+            ))}
+          </ul>
         </div>
       )}
-    </section>
+    </div>
+  )
+}
+
+function LaterCall({ port, now }: { port: Port; now: Date }) {
+  return (
+    <li className="flex items-baseline justify-between gap-2xs border-b border-rule py-2xs">
+      <span className="flex items-baseline gap-2xs">
+        <span aria-hidden>{port.flag}</span>
+        <span className={`font-medium ${port.home ? 'text-home' : 'text-reunion'}`}>
+          {port.name}
+        </span>
+      </span>
+      <span className="tnum shrink-0 font-mono text-[11px] text-muted">
+        {shortDate(port.date)} · {daysUntil(now, port.date)}d
+      </span>
+    </li>
   )
 }

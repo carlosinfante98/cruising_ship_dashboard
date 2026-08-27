@@ -1,0 +1,80 @@
+/* Hallmark · QM2 Log — portable design tokens
+ * genre: editorial · macrostructure: Map / Diagram · theme: Almanac (retuned)
+ * The app consumes these through src/index.css; this file is the portable export.
+ */
+
+:root {
+  /* Surfaces — cool sea-blue paper, light band */
+  --qm2-paper:   oklch(97.6% 0.008 240.4);
+  --qm2-paper-2: oklch(94.5% 0.015 240.5);
+  --qm2-paper-3: oklch(90.5% 0.023 240.6);
+  --qm2-tile:    oklch(88.0% 0.012 240.5);
+  --qm2-rule:    oklch(84.1% 0.027 242.6);
+  --qm2-rule-2:  oklch(72.8% 0.040 243.0);
+
+  /* Ink */
+  --qm2-muted:   oklch(46.9% 0.040 245.2);
+  --qm2-ink-2:   oklch(33.3% 0.055 249.8);
+  --qm2-ink:     oklch(25.3% 0.045 250.0);
+
+  /* Semantic accents */
+  --qm2-sea:     oklch(45.2% 0.131 252.0);  /* the route, the water */
+  --qm2-brass:   oklch(49.0% 0.101 68.4);   /* the ship, the present moment */
+  --qm2-reunion: oklch(45.3% 0.208 306.6);  /* a day she is reachable */
+  --qm2-home:    oklch(47.5% 0.111 155.9);  /* Boston */
+  --qm2-reunion-wash: oklch(92.0% 0.045 306.6);
+  --qm2-brass-wash:   oklch(93.0% 0.035 84.0);
+  --qm2-focus:   oklch(45.2% 0.131 252.0);
+}
+
+.dark {
+  --qm2-paper:   oklch(18.9% 0.023 249.1);
+  --qm2-paper-2: oklch(23.4% 0.029 247.5);
+  --qm2-paper-3: oklch(27.5% 0.034 247.5);
+  --qm2-tile:    oklch(25.5% 0.030 247.5);
+  --qm2-rule:    oklch(33.7% 0.034 245.4);
+  --qm2-rule-2:  oklch(43.4% 0.039 243.5);
+
+  --qm2-muted:   oklch(72.2% 0.029 240.8);
+  --qm2-ink-2:   oklch(84.5% 0.026 236.9);
+  --qm2-ink:     oklch(93.1% 0.015 236.7);
+
+  --qm2-sea:     oklch(76.2% 0.114 239.8);
+  --qm2-brass:   oklch(81.0% 0.116 84.8);
+  --qm2-reunion: oklch(77.2% 0.128 311.1);
+  --qm2-home:    oklch(79.1% 0.111 160.6);
+  --qm2-reunion-wash: oklch(30.0% 0.070 311.0);
+  --qm2-brass-wash:   oklch(30.0% 0.055 84.8);
+  --qm2-focus:   oklch(76.2% 0.114 239.8);
+}
+
+:root {
+  /* Type — three families, at the gate-37 ceiling */
+  --font-display: 'Bodoni Moda', 'Didot', Georgia, serif;
+  --font-body:    'Archivo', 'Helvetica Neue', ui-sans-serif, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  /* Space — 4 pt scale */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs:  0.75rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2rem;
+  --space-xl:  3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 5rem;
+
+  /* Almanac stays square */
+  --radius-card:  0;
+  --radius-pill:  0;
+  --radius-input: 0;
+  --rule-hairline: 1px;
+
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long:  420ms;
+}

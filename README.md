@@ -37,47 +37,55 @@ npm run build:single # one-file HTML preview → dist-single/ (vite-plugin-singl
 - **`src/lib/format.ts`** — great-circle interpolation (slerp on the unit sphere, not
   linear lat/lon) so the estimated at-sea position follows a realistic transatlantic
   arc; clock/timezone/date helpers built on `Intl`.
-- **Components** — `Header` (theme toggle), `NowReport` (hero sentence), `Reunion`
-  (next US port, countdown, progress bar), `ShipMap` (Leaflet: "Route" view with the
-  great-circle path + estimated position on CARTO tiles that swap light/dark with the
-  theme, and "Live AIS" via an embedded VesselFinder map keyed on the IMO), `Timeline`
-  (full itinerary, filterable US-only / hide-past).
+- **Components** — `SideRail` (identity, live state, section anchors, ship's papers,
+  theme toggle), `NowReport` (the hero sentence + her clock beside yours), `ShipMap`
+  (the chart: "Route" view with the great-circle path + estimated position on CARTO
+  tiles that swap light/dark with the theme, and "Live AIS" via an embedded
+  VesselFinder map keyed on the IMO), `StatStrip` (four figures, each summed or
+  counted from the itinerary — nothing estimated), `Reunion` (countdown, wait
+  progress, the US calls after this one), `Timeline` (the log, set in almanac columns,
+  filterable US-only / hide-past), `Colophon` (sources and ship's papers).
 
 ## Design system
 
-One hue family (~205–210° sea blue) across both themes; only lightness/chroma shift so
-light and dark read as one product. Three semantic accents:
+Built with [Hallmark](https://github.com/nutlope/hallmark) — genre **editorial**,
+macrostructure **19 · Map / Diagram**, theme **Almanac** (retuned), nav **N3 side-rail**,
+footer **Ft4 dense colophon**. The chart is the page's spatial organiser: a persistent
+left rail holds identity and live state, and the full width of the canvas belongs to the
+route, the figures and the log.
+
+One hue family (sea-blue, OKLCH ~240–252°) across both themes; only lightness and chroma
+shift, so light and dark read as one product. Three semantic accents:
 
 - **brass** — the ship, the present moment
 - **reunion purple** — a day she's reachable (deliberately the same purple as the
   highlighter she uses in her own Notes app to mark US dates)
 - **home green** — Boston
 
-Typography: Bodoni Moda (display) · Archivo (body) · JetBrains Mono (data). Dark mode
-is the default, class-based (`.dark` on `<html>`), toggled through a React context,
-persisted to `localStorage`, with an inline pre-paint script so there's no
-flash-of-wrong-theme.
+Typography: Bodoni Moda (display, roman) · Archivo (body) · JetBrains Mono (data and
+labels) — three families, the ceiling Hallmark allows. Square corners, hairline rules and
+dense tabular figures throughout; every numeral is `tabular-nums`. Dark mode is the
+default, class-based (`.dark` on `<html>`), toggled through a React context, persisted to
+`localStorage`, with an inline pre-paint script so there's no flash-of-wrong-theme.
+Portable tokens live in [`tokens.css`](tokens.css).
 
 ### Contrast
 
-Every foreground/background pair is WCAG-checked. The dark-mode brass is **not**
-reused in light mode — it fails contrast on the light background — so light mode
-carries its own darker accent values.
+Every foreground/background pair is verified against all three surface levels. The
+dark-mode brass is **not** reused in light mode — it fails contrast on light paper — so
+light mode carries its own darker accent values.
 
-| pair | light | dark |
-| --- | --- | --- |
-| ink on bg | 14.8 (AAA) | 15.1 (AAA) |
-| ink on surface | 13.5 (AAA) | 13.7 (AAA) |
-| muted on bg | 6.4 (AA) | 7.5 (AAA) |
-| muted on surface | 5.8 (AA) | 6.8 (AA) |
-| sea on bg | 6.9 (AA) | 8.8 (AAA) |
-| sea on surface | 6.3 (AA) | 8.0 (AAA) |
-| brass on bg | 6.0 (AA) | 10.2 (AAA) |
-| brass on surface | 5.5 (AA) | 9.2 (AAA) |
-| reunion on bg | 7.7 (AAA) | 8.6 (AAA) |
-| reunion on surface | 7.0 (AAA) | 7.8 (AAA) |
-| home on bg | 5.9 (AA) | 10.1 (AAA) |
-| home on surface | 5.4 (AA) | 9.1 (AAA) |
+| pair | on paper | on paper-2 | on paper-3 |
+| --- | --- | --- | --- |
+| ink | 14.8 / 15.1 | 13.5 / 13.7 | 12.0 / 12.1 |
+| ink-2 | 11.3 / 11.6 | 10.3 / 10.4 | 9.1 / 9.2 |
+| muted | 6.4 / 7.5 | 5.8 / 6.8 | 5.2 / 6.0 |
+| sea | 6.9 / 8.8 | 6.3 / 8.0 | 5.6 / 7.0 |
+| brass | 6.0 / 10.2 | 5.5 / 9.2 | 4.9 / 8.1 |
+| reunion | 7.7 / 8.6 | 7.0 / 7.8 | 6.3 / 6.9 |
+| home | 5.9 / 10.1 | 5.4 / 9.1 | 4.8 / 8.0 |
+
+*light / dark. Every pair clears WCAG AA (4.5:1); most clear AAA.*
 
 ## Deployment
 

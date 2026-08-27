@@ -1,37 +1,47 @@
 import { useEffect, useState } from 'react'
-import { Header } from './components/Header'
+import { SideRail } from './components/SideRail'
 import { NowReport } from './components/NowReport'
 import { Reunion } from './components/Reunion'
 import { ShipMap } from './components/ShipMap'
+import { StatStrip } from './components/StatStrip'
 import { Timeline } from './components/Timeline'
-import { SCHEDULE_END, SCHEDULE_START } from './lib/itinerary'
-import { shortDate } from './lib/format'
+import { Colophon } from './components/Colophon'
 
 export default function App() {
   const [now, setNow] = useState(() => new Date())
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 60_000)
+    const id = setInterval(() => setNow(new Date()), 30_000)
     return () => clearInterval(id)
   }, [])
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-      <Header />
-      <NowReport now={now} />
-      <div className="space-y-8">
-        <Reunion now={now} />
-        <ShipMap now={now} />
-        <Timeline now={now} />
-      </div>
-      <footer className="mt-12 border-t border-line pt-5 font-mono text-[11px] leading-relaxed text-muted">
-        <p>
-          Schedule entered {shortDate(SCHEDULE_START)} – {shortDate(SCHEDULE_END)}, from
-          Cunard&rsquo;s published itineraries, cross-checked against her notes. At-sea positions
-          are estimates interpolated along the great-circle route — switch the map to Live AIS for
-          the real thing.
-        </p>
-      </footer>
+    <div className="min-h-dvh lg:grid lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">
+      <header className="lg:sticky lg:top-0 lg:h-dvh">
+        <SideRail now={now} />
+      </header>
+
+      <main className="min-w-0">
+        <section id="now" className="scroll-mt-2">
+          <NowReport now={now} />
+        </section>
+
+        <section id="chart" className="scroll-mt-2" aria-label="Chart">
+          <ShipMap now={now} />
+        </section>
+
+        <StatStrip now={now} />
+
+        <section id="reunion" className="scroll-mt-2 border-b border-rule" aria-label="Reunion">
+          <Reunion now={now} />
+        </section>
+
+        <section id="log" className="scroll-mt-2" aria-label="The log">
+          <Timeline now={now} />
+        </section>
+
+        <Colophon />
+      </main>
     </div>
   )
 }
