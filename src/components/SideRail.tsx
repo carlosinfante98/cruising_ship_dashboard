@@ -1,5 +1,5 @@
 import { SHIP } from '../lib/itinerary'
-import { shipState } from '../lib/voyage'
+import { nextLeg, shipState } from '../lib/voyage'
 import { clockInZone } from '../lib/format'
 import { useTheme } from '../theme'
 
@@ -14,6 +14,7 @@ const SECTIONS = [
 export function SideRail({ now }: { now: Date }) {
   const { theme, toggle } = useTheme()
   const state = shipState(now)
+  const leg = nextLeg(now)
 
   const status =
     state.kind === 'in-port'
@@ -38,14 +39,27 @@ export function SideRail({ now }: { now: Date }) {
         </p>
       </div>
 
-      <div className="flex items-center gap-2xs border-y border-rule py-2xs">
-        <span
-          aria-hidden
-          className={`relative inline-block size-2 shrink-0 rounded-full ${
-            state.kind === 'in-port' ? 'bg-brass beacon' : 'bg-sea'
-          }`}
-        />
-        <span className={`font-mono text-[11px] ${status.tone}`}>{status.text}</span>
+      <div className="border-y border-rule py-2xs">
+        <div className="flex items-center gap-2xs">
+          <span
+            aria-hidden
+            className={`relative inline-block size-2 shrink-0 rounded-full ${
+              state.kind === 'in-port' ? 'bg-brass beacon' : 'bg-sea'
+            }`}
+          />
+          <span className={`font-mono text-[11px] ${status.tone}`}>{status.text}</span>
+        </div>
+        {leg && (
+          <p className="mt-3xs font-mono text-[11px] text-muted">
+            Next:{' '}
+            <span className={leg.to.home ? 'text-home' : leg.to.us ? 'text-reunion' : 'text-ink-2'}>
+              {leg.to.name}
+            </span>{' '}
+            <span className="tnum">
+              · {leg.daysAway === 0 ? 'today' : `${leg.daysAway}d`}
+            </span>
+          </p>
+        )}
       </div>
 
       <nav aria-label="Sections">

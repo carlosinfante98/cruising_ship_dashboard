@@ -194,3 +194,23 @@ h1, h2, h3, .display {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Standing chart labels — the ship and her next destination are always named,
+   so the map answers "where is she / where next" without a hover. */
+.leaflet-tooltip.qm2-label {
+  padding: 2px 6px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.leaflet-tooltip.qm2-label--ship {
+  color: var(--qm2-brass) !important;
+  border-color: var(--qm2-brass) !important;
+}
+
+.leaflet-tooltip.qm2-label--next {
+  color: var(--qm2-sea) !important;
+  border-color: var(--qm2-sea) !important;
+}
