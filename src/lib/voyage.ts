@@ -2,7 +2,7 @@
 
 import { PORTS, VOYAGES, SCHEDULE_START, SCHEDULE_END } from './itinerary'
 import type { Port, Voyage } from './itinerary'
-import { dayInZone, daySpan, noonUtc } from './format'
+import { dayInZone, daySpan, daysUntil, distanceNm, noonUtc } from './format'
 
 export type ShipState =
   | { kind: 'not-started'; firstPort: Port }
@@ -161,4 +161,72 @@ export function waitProgress(now: Date): WaitProgress | undefined {
   const progress =
     end <= start ? 1 : Math.min(1, Math.max(0, (now.getTime() - start) / (end - start)))
   return { fromIso, toPort, progress }
+}
+
+export interface VoyageStats {
+  /** Total great-circle length of the entered route, nautical miles */
+  routeNm: number
+  /** Nautical miles already covered (up to the last departed port) */
+  coveredNm: number
+  /** Port calls still ahead */
+  portsAhead: number
+  /** Days in the entered schedule with no port call, from today onward */
+  seaDaysAhead: number
+  /** US port calls still ahead (or today's, if she's docked at one) */
+  usCallsAhead: number
+  /** Days until the Boston call, or undefined once it has passed */
+  daysToHome?: number
+}
+
+/**
+ * Real figures derived from the itinerary — nothing here is estimated or
+ * invented; every number is a sum or count over PORTS.
+ */
+export function voyageStats(now: Date): VoyageStats {
+  let routeNm = 0
+  let coveredNm = 0
+  for (let i = 0; i < PORTS.length - 1; i++) {
+    const a = PORTS[i]
+    const b = PORTS[i + 1]
+    if (!a || !b) continue
+    const leg = distanceNm(a, b)
+    routeNm += leg
+    if (arrivalOf(b) <= now) coveredNm += leg
+  }
+
+  const portsAhead = PORTS.filter((p) => arrivalOf(p) > now).length
+  const usCallsAhead = PORTS.filter(
+    (p) => p.us && (arrivalOf(p) > now || dayInZone(now, p.tz) <= (p.end ?? p.date)),
+  ).length
+
+  // A day is a "sea day" when no port call covers it.
+  const inPortDays = new Set<string>()
+  for (const p of PORTS) {
+    let d = p.date
+    while (d <= (p.end ?? p.date)) {
+      inPortDays.add(d)
+      d = new Date(noonUtc(d).getTime() + 86_400_000).toISOString().slice(0, 10)
+    }
+  }
+  let seaDaysAhead = 0
+  const today = dayInZone(now, 'UTC')
+  for (let d = today; d <= SCHEDULE_END; ) {
+    if (d >= SCHEDULE_START && !inPortDays.has(d)) seaDaysAhead++
+    d = new Date(noonUtc(d).getTime() + 86_400_000).toISOString().slice(0, 10)
+  }
+
+  const home = PORTS.find((p) => p.home && arrivalOf(p) > now)
+  return {
+    routeNm,
+    coveredNm,
+    portsAhead,
+    seaDaysAhead,
+    usCallsAhead,
+    ...(home ? { daysToHome: daysUntil(now, home.date) } : {}),
+  }
+}
+
+/** The next few port calls after the ship's current position. */
+export function upcomingPorts(now: Date, count: number): Port[] {
+  return PORTS.filter((p) => arrivalOf(p) > now).slice(0, count)
 }

@@ -4,98 +4,48 @@ import type { TimelineEntry } from '../lib/voyage'
 import { dayInZone, shortDate } from '../lib/format'
 import type { Port } from '../lib/itinerary'
 
-function Badge({ tone, children }: { tone: 'reunion' | 'home' | 'muted'; children: string }) {
-  const cls =
-    tone === 'reunion'
-      ? 'bg-reunion-soft text-reunion'
-      : tone === 'home'
-        ? 'border border-home text-home'
-        : 'border border-line text-muted'
-  return (
-    <span className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${cls}`}>
-      {children}
-    </span>
-  )
-}
-
 function isPast(port: Port, now: Date): boolean {
   return dayInZone(now, port.tz) > (port.end ?? port.date)
 }
 
-function PortRow({ port, here, now }: { port: Port; here: boolean; now: Date }) {
-  const past = !here && isPast(port, now)
-  return (
-    <li
-      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 ${
-        here ? 'border border-brass bg-surface' : ''
-      } ${past ? 'opacity-45' : ''}`}
-    >
-      <span className="w-20 shrink-0 font-mono text-xs text-muted">
-        {shortDate(port.date)}
-        {port.end ? `–${shortDate(port.end).split(' ')[1] ?? ''}` : ''}
-      </span>
-      <span aria-hidden className="text-lg">{port.flag}</span>
-      <span className="min-w-0 flex-1">
-        <span className={`font-medium ${port.home ? 'text-home' : port.us ? 'text-reunion' : ''}`}>
-          {port.name}
-        </span>
-        <span className="ml-2 hidden text-sm text-muted sm:inline">{port.region}</span>
-      </span>
-      <span className="flex shrink-0 gap-1.5">
-        {here && <Badge tone="muted">she&rsquo;s here</Badge>}
-        {port.home ? (
-          <Badge tone="home">home</Badge>
-        ) : port.us ? (
-          <Badge tone="reunion">reachable</Badge>
-        ) : null}
-        {port.turnaround && <Badge tone="muted">turnaround</Badge>}
-      </span>
-    </li>
-  )
-}
-
-function SeaRow({ entry }: { entry: Extract<TimelineEntry, { kind: 'sea' }> }) {
-  return (
-    <li className="flex items-center gap-3 px-3 py-1.5">
-      <span className="w-20 shrink-0" />
-      <span aria-hidden className="font-mono text-xs text-muted">〜</span>
-      <span className="font-mono text-xs text-muted">
-        {entry.days > 0 ? `${entry.days} ${entry.days === 1 ? 'day' : 'days'} at sea` : 'at sea'}
-      </span>
-      {entry.here && (
-        <span className="font-mono text-[10px] uppercase tracking-wider text-brass">
-          ⟵ ship is here · {Math.round(entry.progress * 100)}%
-        </span>
-      )}
-    </li>
-  )
-}
-
+/** The log: every call, set as an almanac column. */
 export function Timeline({ now }: { now: Date }) {
   const [usOnly, setUsOnly] = useState(false)
   const [hidePast, setHidePast] = useState(false)
   const sections = useMemo(() => buildTimeline(now), [now])
 
   const filterCls = (active: boolean) =>
-    `rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-wider transition-colors ${
-      active ? 'border-reunion text-reunion' : 'border-line text-muted hover:text-ink'
+    `whitespace-nowrap border px-2xs py-3xs font-mono text-[11px] uppercase tracking-[0.1em] transition-colors duration-150 active:bg-tile disabled:opacity-40 ${
+      active
+        ? 'border-reunion text-reunion'
+        : 'border-rule text-muted hover:bg-paper-2 hover:text-ink'
     }`
 
   return (
-    <section aria-label="Full itinerary">
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h2 className="font-display text-2xl font-semibold">The itinerary</h2>
-        <div className="flex gap-2">
-          <button type="button" aria-pressed={usOnly} onClick={() => setUsOnly((v) => !v)} className={filterCls(usOnly)}>
+    <div>
+      <div className="flex flex-wrap items-center justify-between gap-2xs border-b border-rule px-md py-2xs">
+        <h2 className="font-display text-xl font-semibold">The log</h2>
+        <div className="flex gap-3xs">
+          <button
+            type="button"
+            aria-pressed={usOnly}
+            onClick={() => setUsOnly((v) => !v)}
+            className={filterCls(usOnly)}
+          >
             US only
           </button>
-          <button type="button" aria-pressed={hidePast} onClick={() => setHidePast((v) => !v)} className={filterCls(hidePast)}>
-            hide past
+          <button
+            type="button"
+            aria-pressed={hidePast}
+            onClick={() => setHidePast((v) => !v)}
+            className={filterCls(hidePast)}
+          >
+            Hide past
           </button>
         </div>
       </div>
 
-      <div className="mt-5 space-y-7">
+      <div className="px-md py-md xl:columns-2 xl:gap-2xl">
         {sections.map((section, si) => {
           const entries = section.entries.filter((e, idx) => {
             if (e.kind === 'port') {
@@ -114,16 +64,20 @@ export function Timeline({ now }: { now: Date }) {
           })
           if (entries.length === 0) return null
           return (
-            <div key={`${section.voyage.name}-${si}`}>
-              <h3 className="flex items-baseline gap-3 border-b border-line pb-2">
-                <span className="font-mono text-xs uppercase tracking-widest text-sea">
+            <section
+              key={`${section.voyage.name}-${si}`}
+              className="mb-lg break-inside-avoid"
+              aria-label={section.voyage.name}
+            >
+              <h3 className="border-b border-rule-2 pb-3xs">
+                <span className="block font-mono text-[10px] tracking-[0.12em] text-sea uppercase">
                   {section.voyage.name}
                 </span>
-                <span className="font-mono text-[10px] text-muted">
+                <span className="tnum mt-3xs block font-mono text-[10px] text-muted">
                   {shortDate(section.voyage.start)} → {shortDate(section.voyage.end)}
                 </span>
               </h3>
-              <ul className="mt-2">
+              <ol className="mt-2xs">
                 {entries.map((entry, i) =>
                   entry.kind === 'port' ? (
                     <PortRow key={i} port={entry.port} here={entry.here} now={now} />
@@ -131,11 +85,59 @@ export function Timeline({ now }: { now: Date }) {
                     <SeaRow key={i} entry={entry} />
                   ),
                 )}
-              </ul>
-            </div>
+              </ol>
+            </section>
           )
         })}
       </div>
-    </section>
+    </div>
+  )
+}
+
+function PortRow({ port, here, now }: { port: Port; here: boolean; now: Date }) {
+  const past = !here && isPast(port, now)
+  const tone = port.home ? 'text-home' : port.us ? 'text-reunion' : 'text-ink'
+  return (
+    <li
+      className={`flex items-baseline gap-2xs border-b border-rule py-2xs ${
+        here ? 'border-l-2 border-l-brass bg-brass-wash pl-2xs' : ''
+      } ${past ? 'opacity-50' : ''} ${port.us && !here ? 'bg-reunion-wash/40' : ''}`}
+    >
+      <span className="tnum w-14 shrink-0 font-mono text-[11px] text-muted">
+        {shortDate(port.date)}
+        {port.end && <span className="text-muted">+1</span>}
+      </span>
+      <span aria-hidden className="shrink-0">
+        {port.flag}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className={`font-medium ${tone}`}>{port.name}</span>
+        <span className="ml-2xs hidden text-xs text-muted sm:inline">{port.region}</span>
+      </span>
+      <span className="flex shrink-0 items-center gap-3xs font-mono text-[9px] tracking-[0.08em] uppercase">
+        {here && <span className="text-brass">here</span>}
+        {port.turnaround && <span className="text-muted">turn</span>}
+        {port.home ? (
+          <span className="border border-home px-3xs text-home">home</span>
+        ) : port.us ? (
+          <span className="bg-reunion-wash px-3xs text-reunion">reach</span>
+        ) : null}
+      </span>
+    </li>
+  )
+}
+
+function SeaRow({ entry }: { entry: Extract<TimelineEntry, { kind: 'sea' }> }) {
+  return (
+    <li className="flex items-baseline gap-2xs py-3xs pl-14">
+      <span className="font-mono text-[10px] text-muted">
+        {entry.days > 0 ? `${entry.days} ${entry.days === 1 ? 'day' : 'days'} at sea` : 'at sea'}
+      </span>
+      {entry.here && (
+        <span className="tnum font-mono text-[10px] tracking-[0.08em] text-brass uppercase">
+          · ship here, {Math.round(entry.progress * 100)}%
+        </span>
+      )}
+    </li>
   )
 }

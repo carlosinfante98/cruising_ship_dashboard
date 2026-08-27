@@ -100,3 +100,20 @@ export function daysUntil(now: Date, isoDay: string): number {
 export function daySpan(fromIso: string, toIso: string): number {
   return Math.round((noonUtc(toIso).getTime() - noonUtc(fromIso).getTime()) / DAY_MS)
 }
+
+const EARTH_RADIUS_NM = 3440.065
+
+/** Great-circle distance between two points, in nautical miles. */
+export function distanceNm(a: LatLon, b: LatLon): number {
+  const dLat = (b.lat - a.lat) * RAD
+  const dLon = (b.lon - a.lon) * RAD
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(a.lat * RAD) * Math.cos(b.lat * RAD) * Math.sin(dLon / 2) ** 2
+  return 2 * EARTH_RADIUS_NM * Math.asin(Math.min(1, Math.sqrt(h)))
+}
+
+/** "1,240" — grouped integer for display */
+export function groupedInt(n: number): string {
+  return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n)
+}

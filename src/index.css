@@ -1,75 +1,196 @@
+/* Hallmark · genre: editorial · macrostructure: Map / Diagram · theme: Almanac (retuned)
+ * tone: technical-editorial instrument · anchor hue: sea-blue 240–250 (OKLCH)
+ * nav: N3 side-rail · footer: Ft4 dense colophon · enrichment: none (typography + real chart)
+ * pre-emit critique: P5 H5 E4 S5 R4 V5
+ */
+
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/*
- * One hue family (~205–210° sea blue) across both themes; only lightness and
- * chroma shift between light and dark. Accents are semantic:
- *   brass   — the ship, the present moment
- *   reunion — a day she's reachable (matches her Notes-app highlighter purple)
- *   home    — Boston
- * Dark-mode brass fails contrast on the light background, so light mode
- * carries its own darker accent values. Ratios documented in the README.
- */
+/* ──────────────────────────────────────────────────────────
+   TOKENS — one hue family (sea-blue) across both themes.
+   Only lightness/chroma shift; the accents keep their meaning:
+     brass   → the ship, the present moment
+     reunion → a day she is reachable (her Notes highlighter purple)
+     home    → Boston
+   Every pair verified ≥ 4.5:1 on paper, paper-2 and paper-3.
+   ────────────────────────────────────────────────────────── */
 :root {
-  --qm2-bg: hsl(206 60% 97%);
-  --qm2-surface: hsl(206 50% 93%);
-  --qm2-line: hsl(207 30% 80%);
-  --qm2-ink: hsl(210 55% 14%);
-  --qm2-muted: hsl(208 22% 36%);
-  --qm2-sea: hsl(208 90% 32%);
-  --qm2-brass: hsl(35 80% 29%);
-  --qm2-reunion: hsl(276 70% 40%);
-  --qm2-reunion-soft: hsl(276 60% 92%);
-  --qm2-home: hsl(152 80% 24%);
+  --qm2-paper:   oklch(97.6% 0.008 240.4);
+  --qm2-paper-2: oklch(94.5% 0.015 240.5);
+  --qm2-paper-3: oklch(90.5% 0.023 240.6);
+  --qm2-rule:    oklch(84.1% 0.027 242.6);
+  --qm2-rule-2:  oklch(72.8% 0.040 243.0);
+  --qm2-muted:   oklch(46.9% 0.040 245.2);
+  --qm2-ink-2:   oklch(33.3% 0.055 249.8);
+  --qm2-ink:     oklch(25.3% 0.045 250.0);
+  --qm2-sea:     oklch(45.2% 0.131 252.0);
+  --qm2-brass:   oklch(49.0% 0.101 68.4);
+  --qm2-reunion: oklch(45.3% 0.208 306.6);
+  --qm2-home:    oklch(47.5% 0.111 155.9);
+  --qm2-reunion-wash: oklch(92.0% 0.045 306.6);
+  --qm2-brass-wash:   oklch(93.0% 0.035 84.0);
+  --qm2-focus:   oklch(45.2% 0.131 252.0);
+  --qm2-tile:    oklch(88.0% 0.012 240.5);
+  color-scheme: light;
 }
 
 .dark {
-  --qm2-bg: hsl(210 45% 8%);
-  --qm2-surface: hsl(209 40% 12%);
-  --qm2-line: hsl(208 28% 22%);
-  --qm2-ink: hsl(204 40% 91%);
-  --qm2-muted: hsl(206 18% 65%);
-  --qm2-sea: hsl(204 85% 68%);
-  --qm2-brass: hsl(41 70% 64%);
-  --qm2-reunion: hsl(276 75% 78%);
-  --qm2-reunion-soft: hsl(276 40% 20%);
-  --qm2-home: hsl(150 50% 64%);
+  --qm2-paper:   oklch(18.9% 0.023 249.1);
+  --qm2-paper-2: oklch(23.4% 0.029 247.5);
+  --qm2-paper-3: oklch(27.5% 0.034 247.5);
+  --qm2-rule:    oklch(33.7% 0.034 245.4);
+  --qm2-rule-2:  oklch(43.4% 0.039 243.5);
+  --qm2-muted:   oklch(72.2% 0.029 240.8);
+  --qm2-ink-2:   oklch(84.5% 0.026 236.9);
+  --qm2-ink:     oklch(93.1% 0.015 236.7);
+  --qm2-sea:     oklch(76.2% 0.114 239.8);
+  --qm2-brass:   oklch(81.0% 0.116 84.8);
+  --qm2-reunion: oklch(77.2% 0.128 311.1);
+  --qm2-home:    oklch(79.1% 0.111 160.6);
+  --qm2-reunion-wash: oklch(30.0% 0.070 311.0);
+  --qm2-brass-wash:   oklch(30.0% 0.055 84.8);
+  --qm2-focus:   oklch(76.2% 0.114 239.8);
+  --qm2-tile:    oklch(25.5% 0.030 247.5);
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-bg: var(--qm2-bg);
-  --color-surface: var(--qm2-surface);
-  --color-line: var(--qm2-line);
-  --color-ink: var(--qm2-ink);
+  --color-paper: var(--qm2-paper);
+  --color-paper-2: var(--qm2-paper-2);
+  --color-paper-3: var(--qm2-paper-3);
+  --color-rule: var(--qm2-rule);
+  --color-rule-2: var(--qm2-rule-2);
   --color-muted: var(--qm2-muted);
+  --color-ink-2: var(--qm2-ink-2);
+  --color-ink: var(--qm2-ink);
   --color-sea: var(--qm2-sea);
   --color-brass: var(--qm2-brass);
   --color-reunion: var(--qm2-reunion);
-  --color-reunion-soft: var(--qm2-reunion-soft);
+  --color-reunion-wash: var(--qm2-reunion-wash);
+  --color-brass-wash: var(--qm2-brass-wash);
   --color-home: var(--qm2-home);
-  --font-display: 'Bodoni Moda', 'Didot', 'Georgia', serif;
+  --color-tile: var(--qm2-tile);
+
+  --font-display: 'Bodoni Moda', 'Didot', Georgia, serif;
   --font-body: 'Archivo', 'Helvetica Neue', ui-sans-serif, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --spacing-3xs: 0.25rem;
+  --spacing-2xs: 0.5rem;
+  --spacing-xs: 0.75rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+  --spacing-3xl: 5rem;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Gate 34 — no horizontal scroll at any width; `clip` preserves sticky descendants. */
+html,
+body {
+  overflow-x: clip;
 }
 
 body {
-  background-color: var(--qm2-bg);
+  background-color: var(--qm2-paper);
   color: var(--qm2-ink);
   font-family: var(--font-body);
-  transition: background-color 200ms ease, color 200ms ease;
+  font-feature-settings: 'cv05' 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Display type is roman, never italic (global Hallmark rule), and must be able
+   to break inside long port names on a 320 px screen. */
+h1, h2, h3, .display {
+  font-style: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+/* Every number in this app is data — align it. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+:focus-visible {
+  outline: 2px solid var(--qm2-focus);
+  outline-offset: 2px;
+  /* Gate 15 — focus rings appear instantly, never transition in. */
 }
 
 .leaflet-container {
-  background-color: var(--qm2-surface);
+  background-color: var(--qm2-paper-2);
   font-family: var(--font-body);
 }
 
-@keyframes ship-pulse {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--qm2-brass) 55%, transparent); }
-  100% { box-shadow: 0 0 0 14px transparent; }
+.leaflet-control-attribution {
+  background: color-mix(in oklch, var(--qm2-paper) 88%, transparent) !important;
+  color: var(--qm2-muted) !important;
+  font-size: 10px;
 }
 
-.ship-dot {
-  animation: ship-pulse 2s ease-out infinite;
+.leaflet-control-attribution a {
+  color: var(--qm2-sea) !important;
+}
+
+.leaflet-bar a {
+  background-color: var(--qm2-paper-2) !important;
+  color: var(--qm2-ink) !important;
+  border-color: var(--qm2-rule) !important;
+}
+
+.leaflet-bar a:hover {
+  background-color: var(--qm2-paper-3) !important;
+}
+
+.leaflet-tooltip {
+  background: var(--qm2-paper-2) !important;
+  color: var(--qm2-ink) !important;
+  border: 1px solid var(--qm2-rule-2) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+}
+
+.leaflet-tooltip::before {
+  display: none !important;
+}
+
+/* The ship's beacon. One motion primitive on the whole page. */
+@keyframes beacon {
+  0% { opacity: 0.9; transform: scale(1); }
+  70% { opacity: 0; transform: scale(2.6); }
+  100% { opacity: 0; transform: scale(2.6); }
+}
+
+.beacon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: var(--qm2-brass);
+  animation: beacon 2.4s var(--ease-out) infinite;
+}
+
+/* Gate 27 — every motion has a reduced-motion fallback. */
+@media (prefers-reduced-motion: reduce) {
+  .beacon::after {
+    animation: none;
+    opacity: 0.28;
+    transform: scale(1.8);
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
