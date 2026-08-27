@@ -26,6 +26,14 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - name: Build with repo-derived base path
+        # VITE_CARTO_KEY is optional — the map works fine with no key at all;
+        # it only raises CARTO's anonymous tile rate limit. Set a repository
+        # secret named CARTO_KEY to enable it (Settings → Secrets and
+        # variables → Actions). It still ends up in the public JS bundle
+        # (static site, no backend to keep it server-side) — restrict it by
+        # HTTP referrer in the CARTO dashboard rather than relying on secrecy.
+        env:
+          VITE_CARTO_KEY: ${{ secrets.CARTO_KEY }}
         run: BASE_PATH="/${GITHUB_REPOSITORY#*/}/" npx vite build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
