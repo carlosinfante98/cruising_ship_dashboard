@@ -1,18 +1,11 @@
 import { SHIP } from '../lib/itinerary'
 import { nextLeg, shipState } from '../lib/voyage'
 import { clockInZone } from '../lib/format'
-import { useTheme } from '../theme'
-
-const SECTIONS = [
-  { id: 'now', label: 'Now' },
-  { id: 'chart', label: 'Chart' },
-  { id: 'reunion', label: 'Reunion' },
-  { id: 'log', label: 'Log' },
-] as const
+import { SECTIONS } from '../lib/sections'
+import { ThemeToggle } from './ThemeToggle'
 
 /** N3 side-rail: identity, live state, in-page anchors, ship's papers. */
-export function SideRail({ now }: { now: Date }) {
-  const { theme, toggle } = useTheme()
+export function SideRail({ now, active }: { now: Date; active?: string }) {
   const state = shipState(now)
   const leg = nextLeg(now)
 
@@ -62,13 +55,18 @@ export function SideRail({ now }: { now: Date }) {
         )}
       </div>
 
-      <nav aria-label="Sections">
-        <ul className="flex flex-row gap-sm lg:flex-col lg:gap-3xs">
+      {/* On mobile the sticky MobileNav bar carries this same list — showing
+          it again here would just duplicate it, so it's desktop-only. */}
+      <nav aria-label="Sections" className="hidden lg:block">
+        <ul className="flex flex-col gap-3xs">
           {SECTIONS.map((s) => (
             <li key={s.id}>
               <a
                 href={`#${s.id}`}
-                className="block whitespace-nowrap border-l-2 border-transparent py-3xs font-mono text-xs tracking-[0.1em] text-muted uppercase transition-colors duration-150 hover:border-sea hover:text-ink focus-visible:text-ink active:text-sea lg:pl-2xs"
+                aria-current={active === s.id ? 'true' : undefined}
+                className={`block border-l-2 py-3xs pl-2xs font-mono text-xs tracking-[0.1em] uppercase transition-colors duration-150 hover:text-ink focus-visible:text-ink active:text-sea ${
+                  active === s.id ? 'border-brass text-brass' : 'border-transparent text-muted'
+                }`}
               >
                 {s.label}
               </a>
@@ -93,14 +91,10 @@ export function SideRail({ now }: { now: Date }) {
         ))}
       </dl>
 
-      <button
-        type="button"
-        onClick={toggle}
-        aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-        className="mt-auto w-full whitespace-nowrap border border-rule-2 px-2xs py-2xs font-mono text-[11px] tracking-[0.1em] text-muted uppercase transition-colors duration-150 hover:bg-paper-3 hover:text-ink focus-visible:text-ink active:bg-tile disabled:opacity-40"
-      >
-        {theme === 'dark' ? 'Light chart' : 'Dark chart'}
-      </button>
+      {/* Mobile carries its own compact toggle in the sticky MobileNav bar. */}
+      <div className="mt-auto hidden lg:block">
+        <ThemeToggle />
+      </div>
     </div>
   )
 }
