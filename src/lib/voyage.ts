@@ -2,7 +2,14 @@
 
 import { PORTS, VOYAGES, SCHEDULE_START, SCHEDULE_END } from './itinerary'
 import type { Port, Voyage } from './itinerary'
-import { dayInZone, daySpan, daysUntil, distanceNm, noonUtc } from './format'
+import {
+  dayInZone,
+  daySpan,
+  daysUntil,
+  distanceNm,
+  greatCirclePoint,
+  noonUtc,
+} from './format'
 
 export type ShipState =
   | { kind: 'not-started'; firstPort: Port }
@@ -229,4 +236,76 @@ export function voyageStats(now: Date): VoyageStats {
 /** The next few port calls after the ship's current position. */
 export function upcomingPorts(now: Date, count: number): Port[] {
   return PORTS.filter((p) => arrivalOf(p) > now).slice(0, count)
+}
+
+export interface Position {
+  lat: number
+  lon: number
+  /** true when she's docked (the port's own coordinates), false when interpolated at sea */
+  exact: boolean
+}
+
+/** Where the ship is right now — the port's coordinates, or the great-circle estimate. */
+export function currentPosition(now: Date): Position | undefined {
+  const state = shipState(now)
+  if (state.kind === 'in-port') {
+    return { lat: state.port.lat, lon: state.port.lon, exact: true }
+  }
+  if (state.kind === 'at-sea') {
+    const p = greatCirclePoint(state.from, state.to, state.progress)
+    return { lat: p.lat, lon: p.lon, exact: false }
+  }
+  return undefined
+}
+
+export interface NextLeg {
+  /** The port she's sailing from; absent before the voyage begins */
+  from?: Port
+  to: Port
+  /** Great-circle length of this leg, nautical miles */
+  nmLeg: number
+  /** Nautical miles still to run on this leg */
+  nmRemaining: number
+  /** 0 → just departed, 1 → alongside */
+  progress: number
+  daysAway: number
+  /** True while she is still alongside the previous port (hasn't sailed yet) */
+  stillAlongside: boolean
+}
+
+/**
+ * The next destination: where she's headed, how far it is, and how far along
+ * the current leg she is. Distances are great-circle, matching the chart.
+ */
+export function nextLeg(now: Date): NextLeg | undefined {
+  const state = shipState(now)
+
+  let from: Port | undefined
+  let to: Port | undefined
+  let progress = 0
+  let stillAlongside = false
+
+  if (state.kind === 'at-sea') {
+    from = state.from
+    to = state.to
+    progress = state.progress
+  } else if (state.kind === 'in-port') {
+    from = state.port
+    to = PORTS.find((p) => arrivalOf(p) > departureOf(state.port))
+    stillAlongside = true
+  } else if (state.kind === 'not-started') {
+    to = state.firstPort
+  }
+
+  if (!to) return undefined
+  const nmLeg = from ? distanceNm(from, to) : 0
+  return {
+    ...(from ? { from } : {}),
+    to,
+    nmLeg,
+    nmRemaining: nmLeg * (1 - progress),
+    progress,
+    daysAway: daysUntil(now, to.date),
+    stillAlongside,
+  }
 }

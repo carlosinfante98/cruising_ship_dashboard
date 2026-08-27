@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import { PORTS, SHIP } from '../lib/itinerary'
-import { shipState } from '../lib/voyage'
+import { nextLeg, shipState } from '../lib/voyage'
 import { greatCirclePath, greatCirclePoint, shortDate } from '../lib/format'
 import { useTheme } from '../theme'
 
@@ -78,25 +78,47 @@ export function ShipMap({ now }: { now: Date }) {
       ).addTo(overlay)
     }
 
+    const leg = nextLeg(now)
+    const target = leg?.to
+
     for (const port of PORTS) {
       const color = port.home ? home : port.us ? reunion : sea
-      L.circleMarker([port.lat, port.lon], {
-        radius: port.us ? 5.5 : 3.5,
+      const isTarget = port === target
+      const marker = L.circleMarker([port.lat, port.lon], {
+        radius: isTarget ? 7 : port.us ? 5.5 : 3.5,
         color,
-        weight: 2,
-        fillColor: paper,
-        fillOpacity: 1,
+        weight: isTarget ? 3 : 2,
+        fillColor: isTarget ? color : paper,
+        fillOpacity: isTarget ? 0.35 : 1,
       })
-        .bindTooltip(`${port.name} · ${shortDate(port.date)}`)
-        .addTo(overlay)
+      if (isTarget) {
+        // The next destination carries a standing label — no hover needed.
+        marker.bindTooltip(`NEXT · ${port.name} · ${shortDate(port.date)}`, {
+          permanent: true,
+          direction: 'right',
+          offset: [10, 0],
+          className: 'qm2-label qm2-label--next',
+        })
+      } else {
+        marker.bindTooltip(`${port.name} · ${shortDate(port.date)}`)
+      }
+      marker.addTo(overlay)
     }
 
     const state = shipState(now)
     let pos: { lat: number; lon: number } | undefined
     if (state.kind === 'in-port') {
       pos = { lat: state.port.lat, lon: state.port.lon }
+      // Solid where she has yet to sail, so the next hop reads at a glance.
+      if (leg?.from && leg.to) {
+        L.polyline(
+          greatCirclePath(leg.from, leg.to).map((p) => [p.lat, p.lon]),
+          { color: brass, weight: 2, opacity: 0.9, dashArray: '6 5' },
+        ).addTo(overlay)
+      }
     } else if (state.kind === 'at-sea') {
       pos = greatCirclePoint(state.from, state.to, state.progress)
+      // Wake behind her, solid line ahead of her.
       L.polyline(
         greatCirclePath(state.from, state.to).map((p) => [p.lat, p.lon]),
         { color: brass, weight: 2.5, opacity: 1 },
@@ -111,7 +133,15 @@ export function ShipMap({ now }: { now: Date }) {
         iconAnchor: [6, 6],
       })
       L.marker([pos.lat, pos.lon], { icon, zIndexOffset: 1000 })
-        .bindTooltip(`${SHIP.name} · estimated position`)
+        .bindTooltip(
+          state.kind === 'in-port' ? `SHE IS HERE · ${state.port.name}` : 'SHE IS HERE · at sea',
+          {
+            permanent: true,
+            direction: 'left',
+            offset: [-10, 0],
+            className: 'qm2-label qm2-label--ship',
+          },
+        )
         .addTo(overlay)
       map.setView([pos.lat, pos.lon], Math.max(map.getZoom(), 4), { animate: false })
     } else {
@@ -157,12 +187,27 @@ export function ShipMap({ now }: { now: Date }) {
           aria-label="Route chart with the ship's estimated position"
         />
       ) : (
-        <iframe
-          title={`Live AIS position of ${SHIP.name}`}
-          src={`https://www.vesselfinder.com/aismap?imo=${SHIP.imo}&zoom=5&names=true&track=true`}
-          className="h-[380px] w-full border-0 sm:h-[460px] xl:h-[560px]"
-          loading="lazy"
-        />
+        <div>
+          <iframe
+            title={`Live AIS position of ${SHIP.name}`}
+            src={`https://www.vesselfinder.com/aismap?imo=${SHIP.imo}&zoom=5&names=true&track=true`}
+            className="h-[380px] w-full border-0 sm:h-[460px] xl:h-[560px]"
+            loading="lazy"
+          />
+          <p className="border-t border-rule px-md py-2xs font-mono text-[10px] leading-relaxed text-muted">
+            Live AIS is a third-party embed from VesselFinder and can be blank when their
+            widget is unavailable.{' '}
+            <a
+              href={`https://www.vesselfinder.com/vessels/details/${SHIP.imo}`}
+              target="_blank"
+              rel="noreferrer"
+              className="whitespace-nowrap text-sea underline underline-offset-2 hover:text-ink focus-visible:text-ink"
+            >
+              Open {SHIP.name} on VesselFinder
+            </a>{' '}
+            — the Route chart beside it needs no third party at all.
+          </p>
+        </div>
       )}
     </div>
   )

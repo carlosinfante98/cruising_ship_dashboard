@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { SideRail } from './components/SideRail'
 import { NowReport } from './components/NowReport'
+import { PositionBand } from './components/PositionBand'
 import { Reunion } from './components/Reunion'
 import { ShipMap } from './components/ShipMap'
 import { StatStrip } from './components/StatStrip'
@@ -25,6 +26,8 @@ export default function App() {
         <section id="now" className="scroll-mt-2">
           <NowReport now={now} />
         </section>
+
+        <PositionBand now={now} />
 
         <section id="chart" className="scroll-mt-2" aria-label="Chart">
           <ShipMap now={now} />
