@@ -10,7 +10,7 @@ because that's when we can see each other.
 ## Stack
 
 Vite · React 18 · TypeScript (strict) · Tailwind CSS v4 · Leaflet. Static site — no
-backend, no API keys.
+backend, no API key required.
 
 ```sh
 npm install
@@ -19,6 +19,25 @@ npm run typecheck    # tsc --noEmit
 npm run build        # production build → dist/
 npm run build:single # one-file HTML preview → dist-single/ (vite-plugin-singlefile)
 ```
+
+### Optional: a CARTO key
+
+The Route chart's basemap tiles (CARTO) work anonymously with no key — that's what a
+fresh checkout gets by default. A personal key just raises the anonymous rate limit;
+it is never required.
+
+To set one locally: copy `.env.example` to `.env.local` and fill in `VITE_CARTO_KEY`.
+`.env.local` is gitignored — **never commit a key**. For the deployed site, add it as
+a repository secret named `CARTO_KEY` (**Settings → Secrets and variables →
+Actions**); the deploy workflow picks it up automatically.
+
+One thing worth understanding: because this is a static site with no backend, the key
+still ends up inside the public JS bundle served to every visitor — there's nowhere
+server-side to keep it hidden. Keeping it out of the git repo (via `.gitignore` /
+Actions secret) stops it from leaking through commit history or a public repo listing,
+but it is not a secret once the site is deployed — anyone can read it out of the
+Network tab. If that matters to you, set an HTTP-referrer restriction on the key in
+your CARTO dashboard so it only works from your GitHub Pages domain.
 
 ## Architecture
 

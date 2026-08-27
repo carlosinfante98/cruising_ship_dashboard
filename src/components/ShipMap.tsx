@@ -5,9 +5,19 @@ import { nextLeg, shipState } from '../lib/voyage'
 import { greatCirclePath, greatCirclePoint, shortDate } from '../lib/format'
 import { useTheme } from '../theme'
 
+// CARTO's basemap tiles work with no key (used by default below). An optional
+// personal key raises the anonymous rate limit — set VITE_CARTO_KEY in a
+// local .env.local (gitignored, never committed) or, for the deployed build,
+// as the CARTO_KEY repository secret consumed by .github/workflows/deploy.yml.
+// The key still ships inside the public JS bundle — there's no backend on a
+// static site to keep it server-side — so treat it as rate-limit hygiene, not
+// a secret, and set an HTTP-referrer restriction on it in the CARTO dashboard.
+const CARTO_KEY = import.meta.env.VITE_CARTO_KEY as string | undefined
+const KEY_PARAM = CARTO_KEY ? `?key=${encodeURIComponent(CARTO_KEY)}` : ''
+
 const TILES = {
-  light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  light: `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png${KEY_PARAM}`,
+  dark: `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png${KEY_PARAM}`,
 } as const
 
 const ATTRIBUTION =
