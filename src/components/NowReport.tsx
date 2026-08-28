@@ -62,7 +62,7 @@ export function NowReport({ now }: { now: Date }) {
 
       {shipTz && (
         <div className="flex gap-lg border-t border-rule pt-sm lg:border-t-0 lg:pt-0">
-          <Clock label="Ship time" tz={shipTz} now={now} tone="text-brass" />
+          <Clock label="Nati time" tz={shipTz} now={now} tone="text-brass" />
           <Clock label="Carlos" tz={CARLOS_TZ} now={now} tone="text-carlos" />
         </div>
       )}

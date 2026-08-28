@@ -58,7 +58,7 @@ your CARTO dashboard so it only works from your GitHub Pages domain.
   arc; clock/timezone/date helpers built on `Intl`.
 - **Components** — `SideRail` (identity, live state, section anchors, ship's papers,
   theme toggle), `MobileNav` (the sticky mobile equivalent of the rail), `NowReport`
-  (the hero sentence + the ship's clock beside Carlos's), `ShipMap`
+  (the hero sentence + Nati's clock beside Carlos's), `ShipMap`
   (the chart: "Route" view with the great-circle path + estimated position on CARTO
   tiles that swap light/dark with the theme, and "Live AIS" via an embedded
   VesselFinder map keyed on the IMO), `StatStrip` (four figures, each summed or

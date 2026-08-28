@@ -63,7 +63,7 @@ export function PositionBand({ now }: { now: Date }) {
             />
             {state.kind === 'in-port' && (
               <>
-                <Field label="Ship time" value={clockInZone(now, state.port.tz)} />
+                <Field label="Nati time" value={clockInZone(now, state.port.tz)} />
                 <Field label="Country" value={state.port.region} />
                 <Field
                   label="Sails"
