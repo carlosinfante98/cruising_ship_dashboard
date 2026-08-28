@@ -1,9 +1,9 @@
 # QM2 Log
 
-A small static web app that tracks the **Queen Mary 2** (Cunard) while she's aboard as
-ship's doctor, August 2026 → March 2027. Its core job is answering two questions from
-shore: *where is she right now* and *how long until the ship next docks on US soil* —
-because that's when we can see each other.
+A small static web app that tracks the **Queen Mary 2** (Cunard) during its August
+2026 → March 2027 contract. Its core job is answering two questions, for anyone
+looking at it: *where is the ship right now* and *how long until it next docks on US
+soil* — because that's when the two of us can be in the same place.
 
 **Ship**: Queen Mary 2 · IMO 9241061 · MMSI 310627000 · call sign ZCEF6 · flag Bermuda
 
@@ -44,9 +44,9 @@ your CARTO dashboard so it only works from your GitHub Pages domain.
 - **`src/lib/itinerary.ts`** — single source of truth. ~32 port calls (Aug 25 – Nov 30,
   2026 entered so far) with date, optional end date for overnight stays, name, region,
   flag, IANA timezone, lat/lon, and flags: `us` (reachable without leaving the country),
-  `home` (Boston), `turnaround` (guests swap, she stays aboard). `VOYAGES` groups ports
-  into legs. Sourced from Cunard's published itineraries, cross-checked against her
-  handwritten schedule.
+  `carlos` (Boston, where Carlos is based), `turnaround` (guests swap, medical staff
+  remain aboard). `VOYAGES` groups ports into legs. Sourced from Cunard's published
+  itineraries, cross-checked against the handwritten schedule kept aboard.
 - **`src/lib/voyage.ts`** — pure schedule logic, no React/DOM: `shipState()`
   (in-port / at-sea / not-started / ended), `buildTimeline()` (ports grouped by voyage
   with sea-day gaps and a "you are here" marker), `nextUsPort()` and `waitProgress()`
@@ -57,7 +57,8 @@ your CARTO dashboard so it only works from your GitHub Pages domain.
   linear lat/lon) so the estimated at-sea position follows a realistic transatlantic
   arc; clock/timezone/date helpers built on `Intl`.
 - **Components** — `SideRail` (identity, live state, section anchors, ship's papers,
-  theme toggle), `NowReport` (the hero sentence + her clock beside yours), `ShipMap`
+  theme toggle), `MobileNav` (the sticky mobile equivalent of the rail), `NowReport`
+  (the hero sentence + the ship's clock beside Carlos's), `ShipMap`
   (the chart: "Route" view with the great-circle path + estimated position on CARTO
   tiles that swap light/dark with the theme, and "Live AIS" via an embedded
   VesselFinder map keyed on the IMO), `StatStrip` (four figures, each summed or
@@ -77,9 +78,9 @@ One hue family (sea-blue, OKLCH ~240–252°) across both themes; only lightness
 shift, so light and dark read as one product. Three semantic accents:
 
 - **brass** — the ship, the present moment
-- **reunion purple** — a day she's reachable (deliberately the same purple as the
-  highlighter she uses in her own Notes app to mark US dates)
-- **home green** — Boston
+- **reunion purple** — a day the ship is reachable (deliberately the same purple as
+  the highlighter used in the source Notes app to mark US dates)
+- **carlos green** — Boston, where Carlos is based
 
 Typography: Bodoni Moda (display, roman) · Archivo (body) · JetBrains Mono (data and
 labels) — three families, the ceiling Hallmark allows. Square corners, hairline rules and
@@ -102,7 +103,7 @@ light mode carries its own darker accent values.
 | sea | 6.9 / 8.8 | 6.3 / 8.0 | 5.6 / 7.0 |
 | brass | 6.0 / 10.2 | 5.5 / 9.2 | 4.9 / 8.1 |
 | reunion | 7.7 / 8.6 | 7.0 / 7.8 | 6.3 / 6.9 |
-| home | 5.9 / 10.1 | 5.4 / 9.1 | 4.8 / 8.0 |
+| carlos | 5.9 / 10.1 | 5.4 / 9.1 | 4.8 / 8.0 |
 
 *light / dark. Every pair clears WCAG AA (4.5:1); most clear AAA.*
 
@@ -119,4 +120,4 @@ Everything renders from `src/lib/itinerary.ts`. To extend past Nov 30: append `P
 entries (ISO dates, port-local calendar days; add `end` for overnight stays; set `us`
 on any call on US soil) and the corresponding `VOYAGES` legs, bump `SCHEDULE_END`,
 done. A note on `us`: St Thomas (USVI) is flagged reachable since it's US soil — no
-passport needed — even though it isn't highlighted in her notes.
+passport needed — even though it isn't highlighted in the source notes.

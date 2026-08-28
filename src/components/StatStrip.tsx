@@ -18,10 +18,10 @@ export function StatStrip({ now }: { now: Date }) {
     { value: String(s.portsAhead), unit: 'calls', label: 'Ports still ahead' },
     { value: String(s.seaDaysAhead), unit: 'days', label: 'Sea days remaining' },
     {
-      value: s.daysToHome !== undefined ? String(s.daysToHome) : '—',
-      unit: s.daysToHome !== undefined ? 'days' : '',
-      label: s.daysToHome !== undefined ? 'Until Boston' : 'Boston call passed',
-      tone: 'text-home',
+      value: s.daysToCarlos !== undefined ? String(s.daysToCarlos) : '—',
+      unit: s.daysToCarlos !== undefined ? 'days' : '',
+      label: s.daysToCarlos !== undefined ? 'Until Boston' : 'Boston call passed',
+      tone: 'text-carlos',
     },
   ]
 

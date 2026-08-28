@@ -12,8 +12,8 @@
    TOKENS — one hue family (sea-blue) across both themes.
    Only lightness/chroma shift; the accents keep their meaning:
      brass   → the ship, the present moment
-     reunion → a day she is reachable (her Notes highlighter purple)
-     home    → Boston
+     reunion → a day the ship is reachable (the Notes highlighter purple)
+     carlos  → where Carlos is (Boston)
    Every pair verified ≥ 4.5:1 on paper, paper-2 and paper-3.
    ────────────────────────────────────────────────────────── */
 :root {
@@ -28,7 +28,7 @@
   --qm2-sea:     oklch(45.2% 0.131 252.0);
   --qm2-brass:   oklch(49.0% 0.101 68.4);
   --qm2-reunion: oklch(45.3% 0.208 306.6);
-  --qm2-home:    oklch(47.5% 0.111 155.9);
+  --qm2-carlos:  oklch(47.5% 0.111 155.9);
   --qm2-reunion-wash: oklch(92.0% 0.045 306.6);
   --qm2-brass-wash:   oklch(93.0% 0.035 84.0);
   --qm2-focus:   oklch(45.2% 0.131 252.0);
@@ -48,7 +48,7 @@
   --qm2-sea:     oklch(76.2% 0.114 239.8);
   --qm2-brass:   oklch(81.0% 0.116 84.8);
   --qm2-reunion: oklch(77.2% 0.128 311.1);
-  --qm2-home:    oklch(79.1% 0.111 160.6);
+  --qm2-carlos:  oklch(79.1% 0.111 160.6);
   --qm2-reunion-wash: oklch(30.0% 0.070 311.0);
   --qm2-brass-wash:   oklch(30.0% 0.055 84.8);
   --qm2-focus:   oklch(76.2% 0.114 239.8);
@@ -70,7 +70,7 @@
   --color-reunion: var(--qm2-reunion);
   --color-reunion-wash: var(--qm2-reunion-wash);
   --color-brass-wash: var(--qm2-brass-wash);
-  --color-home: var(--qm2-home);
+  --color-carlos: var(--qm2-carlos);
   --color-tile: var(--qm2-tile);
 
   --font-display: 'Bodoni Moda', 'Didot', Georgia, serif;
@@ -195,8 +195,8 @@ h1, h2, h3, .display {
   }
 }
 
-/* Standing chart labels — the ship and her next destination are always named,
-   so the map answers "where is she / where next" without a hover. */
+/* Standing chart labels — the ship and its next destination are always
+   named, so the map answers "where is it / where next" without a hover. */
 .leaflet-tooltip.qm2-label {
   padding: 2px 6px;
   font-size: 9px;

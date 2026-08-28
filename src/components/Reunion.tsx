@@ -3,7 +3,7 @@ import type { Port } from '../lib/itinerary'
 import { arrivalOf, nextUsPort, shipState, waitProgress } from '../lib/voyage'
 import { daysUntil, longDate, shortDate } from '../lib/format'
 
-/** The emotional centrepiece: when can you next reach her. */
+/** The emotional centrepiece: when the ship is next reachable. */
 export function Reunion({ now }: { now: Date }) {
   const port = nextUsPort(now)
   const state = shipState(now)
@@ -21,8 +21,8 @@ export function Reunion({ now }: { now: Date }) {
   const docked = state.kind === 'in-port' && state.port === port
   const days = daysUntil(now, port.date)
   const wait = waitProgress(now)
-  const accent = port.home ? 'text-home' : 'text-reunion'
-  const bar = port.home ? 'bg-home' : 'bg-reunion'
+  const accent = port.carlos ? 'text-carlos' : 'text-reunion'
+  const bar = port.carlos ? 'bg-carlos' : 'bg-reunion'
 
   const laterCalls = PORTS.filter((p) => p.us && arrivalOf(p) > now && p !== port).slice(0, 4)
 
@@ -35,8 +35,8 @@ export function Reunion({ now }: { now: Date }) {
 
         {docked ? (
           <p className="mt-sm font-display text-4xl leading-tight font-semibold sm:text-5xl">
-            <span className={accent}>She&rsquo;s reachable today</span> — docked in {port.name}
-            {port.home ? ', home' : ''}.
+            <span className={accent}>Reachable today</span> — docked in {port.name}
+            {port.carlos ? ', with Carlos' : ''}.
           </p>
         ) : (
           <>
@@ -50,7 +50,7 @@ export function Reunion({ now }: { now: Date }) {
             </p>
             <p className="mt-sm text-lg leading-relaxed">
               until <span className={`font-semibold ${accent}`}>{port.name}</span>
-              {port.home && <span className="text-home"> — home</span>} on {longDate(port.date)}.
+              {port.carlos && <span className="text-carlos"> — Carlos</span>} on {longDate(port.date)}.
             </p>
           </>
         )}
@@ -100,7 +100,7 @@ function LaterCall({ port, now }: { port: Port; now: Date }) {
     <li className="flex items-baseline justify-between gap-2xs border-b border-rule py-2xs">
       <span className="flex items-baseline gap-2xs">
         <span aria-hidden>{port.flag}</span>
-        <span className={`font-medium ${port.home ? 'text-home' : 'text-reunion'}`}>
+        <span className={`font-medium ${port.carlos ? 'text-carlos' : 'text-reunion'}`}>
           {port.name}
         </span>
       </span>

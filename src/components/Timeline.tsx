@@ -96,7 +96,7 @@ export function Timeline({ now }: { now: Date }) {
 
 function PortRow({ port, here, now }: { port: Port; here: boolean; now: Date }) {
   const past = !here && isPast(port, now)
-  const tone = port.home ? 'text-home' : port.us ? 'text-reunion' : 'text-ink'
+  const tone = port.carlos ? 'text-carlos' : port.us ? 'text-reunion' : 'text-ink'
   return (
     <li
       className={`flex items-baseline gap-2xs border-b border-rule py-2xs ${
@@ -117,8 +117,8 @@ function PortRow({ port, here, now }: { port: Port; here: boolean; now: Date }) 
       <span className="flex shrink-0 items-center gap-3xs font-mono text-[9px] tracking-[0.08em] uppercase">
         {here && <span className="text-brass">here</span>}
         {port.turnaround && <span className="text-muted">turn</span>}
-        {port.home ? (
-          <span className="border border-home px-3xs text-home">home</span>
+        {port.carlos ? (
+          <span className="border border-carlos px-3xs text-carlos">Carlos</span>
         ) : port.us ? (
           <span className="bg-reunion-wash px-3xs text-reunion">reach</span>
         ) : null}

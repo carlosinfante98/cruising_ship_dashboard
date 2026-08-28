@@ -138,7 +138,7 @@ export function buildTimeline(now: Date): TimelineSection[] {
   })
 }
 
-/** The next port call on US soil (or the one she's docked at right now) */
+/** The next port call on US soil (or the one currently docked, if any) */
 export function nextUsPort(now: Date): Port | undefined {
   const state = shipState(now)
   if (state.kind === 'in-port' && state.port.us) return state.port
@@ -179,10 +179,10 @@ export interface VoyageStats {
   portsAhead: number
   /** Days in the entered schedule with no port call, from today onward */
   seaDaysAhead: number
-  /** US port calls still ahead (or today's, if she's docked at one) */
+  /** US port calls still ahead (or today's, if docked at one) */
   usCallsAhead: number
   /** Days until the Boston call, or undefined once it has passed */
-  daysToHome?: number
+  daysToCarlos?: number
 }
 
 /**
@@ -222,14 +222,14 @@ export function voyageStats(now: Date): VoyageStats {
     d = new Date(noonUtc(d).getTime() + 86_400_000).toISOString().slice(0, 10)
   }
 
-  const home = PORTS.find((p) => p.home && arrivalOf(p) > now)
+  const carlos = PORTS.find((p) => p.carlos && arrivalOf(p) > now)
   return {
     routeNm,
     coveredNm,
     portsAhead,
     seaDaysAhead,
     usCallsAhead,
-    ...(home ? { daysToHome: daysUntil(now, home.date) } : {}),
+    ...(carlos ? { daysToCarlos: daysUntil(now, carlos.date) } : {}),
   }
 }
 
@@ -241,7 +241,7 @@ export function upcomingPorts(now: Date, count: number): Port[] {
 export interface Position {
   lat: number
   lon: number
-  /** true when she's docked (the port's own coordinates), false when interpolated at sea */
+  /** true when docked (the port's own coordinates), false when interpolated at sea */
   exact: boolean
 }
 
@@ -259,7 +259,7 @@ export function currentPosition(now: Date): Position | undefined {
 }
 
 export interface NextLeg {
-  /** The port she's sailing from; absent before the voyage begins */
+  /** The port sailed from; absent before the voyage begins */
   from?: Port
   to: Port
   /** Great-circle length of this leg, nautical miles */
@@ -269,13 +269,13 @@ export interface NextLeg {
   /** 0 → just departed, 1 → alongside */
   progress: number
   daysAway: number
-  /** True while she is still alongside the previous port (hasn't sailed yet) */
+  /** True while still alongside the previous port (hasn't sailed yet) */
   stillAlongside: boolean
 }
 
 /**
- * The next destination: where she's headed, how far it is, and how far along
- * the current leg she is. Distances are great-circle, matching the chart.
+ * The next destination: where it's headed, how far it is, and how far along
+ * the current leg it is. Distances are great-circle, matching the chart.
  */
 export function nextLeg(now: Date): NextLeg | undefined {
   const state = shipState(now)

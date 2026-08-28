@@ -8,7 +8,7 @@ export function Colophon() {
     ['IMO / MMSI', `${SHIP.imo} · ${SHIP.mmsi}`],
     ['Call sign / flag', `${SHIP.callSign} · ${SHIP.flag}`],
     ['Schedule entered', `${shortDate(SCHEDULE_START)} – ${shortDate(SCHEDULE_END)}, 2026`],
-    ['Itinerary source', 'Cunard published voyages, cross-checked against her own notes'],
+    ['Itinerary source', 'Cunard published voyages, cross-checked against notes kept aboard'],
     ['Position', 'Estimated along the great-circle route between calls'],
     ['Live track', 'VesselFinder AIS · basemap CARTO / OpenStreetMap'],
   ]
@@ -24,7 +24,7 @@ export function Colophon() {
         ))}
       </dl>
       <p className="mt-sm max-w-[70ch] font-mono text-[10px] leading-relaxed text-muted">
-        Kept from shore while she works the Atlantic. Times are the ship&rsquo;s local time in
+        A running log of the ship&rsquo;s Atlantic contract. Times are the ship&rsquo;s local time in
         port; sea-day positions are interpolated, not observed — switch the chart to Live AIS for
         the real fix.
       </p>

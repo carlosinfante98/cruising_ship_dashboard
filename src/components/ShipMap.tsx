@@ -74,7 +74,7 @@ export function ShipMap({ now }: { now: Date }) {
     const sea = token('--qm2-sea')
     const brass = token('--qm2-brass')
     const reunion = token('--qm2-reunion')
-    const home = token('--qm2-home')
+    const carlos = token('--qm2-carlos')
     const rule = token('--qm2-rule-2')
     const paper = token('--qm2-paper')
 
@@ -92,7 +92,7 @@ export function ShipMap({ now }: { now: Date }) {
     const target = leg?.to
 
     for (const port of PORTS) {
-      const color = port.home ? home : port.us ? reunion : sea
+      const color = port.carlos ? carlos : port.us ? reunion : sea
       const isTarget = port === target
       const marker = L.circleMarker([port.lat, port.lon], {
         radius: isTarget ? 7 : port.us ? 5.5 : 3.5,
@@ -119,7 +119,7 @@ export function ShipMap({ now }: { now: Date }) {
     let pos: { lat: number; lon: number } | undefined
     if (state.kind === 'in-port') {
       pos = { lat: state.port.lat, lon: state.port.lon }
-      // Solid where she has yet to sail, so the next hop reads at a glance.
+      // Solid where the ship has yet to sail, so the next hop reads at a glance.
       if (leg?.from && leg.to) {
         L.polyline(
           greatCirclePath(leg.from, leg.to).map((p) => [p.lat, p.lon]),
@@ -128,7 +128,7 @@ export function ShipMap({ now }: { now: Date }) {
       }
     } else if (state.kind === 'at-sea') {
       pos = greatCirclePoint(state.from, state.to, state.progress)
-      // Wake behind her, solid line ahead of her.
+      // Wake behind, solid line ahead — the direction of travel.
       L.polyline(
         greatCirclePath(state.from, state.to).map((p) => [p.lat, p.lon]),
         { color: brass, weight: 2.5, opacity: 1 },
@@ -144,7 +144,7 @@ export function ShipMap({ now }: { now: Date }) {
       })
       L.marker([pos.lat, pos.lon], { icon, zIndexOffset: 1000 })
         .bindTooltip(
-          state.kind === 'in-port' ? `SHE IS HERE · ${state.port.name}` : 'SHE IS HERE · at sea',
+          state.kind === 'in-port' ? `SHIP HERE · ${state.port.name}` : 'SHIP HERE · at sea',
           {
             permanent: true,
             direction: 'left',
@@ -185,7 +185,7 @@ export function ShipMap({ now }: { now: Date }) {
         <ul className="flex flex-wrap items-center gap-sm font-mono text-[10px] tracking-[0.08em] text-muted uppercase">
           <Key tone="bg-brass" label="Ship" />
           <Key tone="bg-reunion" label="Reachable" />
-          <Key tone="bg-home" label="Home" />
+          <Key tone="bg-carlos" label="Carlos" />
           <Key tone="bg-sea" label="Port" />
         </ul>
       </div>
