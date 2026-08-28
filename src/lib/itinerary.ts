@@ -18,9 +18,9 @@ export interface Port {
   lon: number
   /** Reachable without leaving the country (US soil, incl. territories) */
   us?: boolean
-  /** Boston — home */
-  home?: boolean
-  /** Guests disembark/embark; she stays aboard */
+  /** Boston — where Carlos is based */
+  carlos?: boolean
+  /** Guests disembark/embark; medical staff remain aboard */
   turnaround?: boolean
 }
 
@@ -98,7 +98,7 @@ export const PORTS: Port[] = [
   newYork('2026-09-12'),
   southampton('2026-09-19'),
   newYork('2026-09-26'),
-  { date: '2026-09-29', name: 'Boston', region: 'Massachusetts, USA', flag: '\u{1F1FA}\u{1F1F8}', tz: 'America/New_York', lat: 42.3467, lon: -71.0322, us: true, home: true },
+  { date: '2026-09-29', name: 'Boston', region: 'Massachusetts, USA', flag: '\u{1F1FA}\u{1F1F8}', tz: 'America/New_York', lat: 42.3467, lon: -71.0322, us: true, carlos: true },
   { date: '2026-10-01', name: 'Sydney', region: 'Nova Scotia, Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Glace_Bay', lat: 46.1368, lon: -60.1942 },
   { date: '2026-10-03', end: '2026-10-04', name: 'Quebec City', region: 'Quebec, Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Toronto', lat: 46.8139, lon: -71.208 },
   { date: '2026-10-06', name: 'Saguenay', region: 'Quebec, Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Toronto', lat: 48.3352, lon: -70.877 },

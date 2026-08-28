@@ -45,7 +45,7 @@ export function SideRail({ now, active }: { now: Date; active?: string }) {
         {leg && (
           <p className="mt-3xs font-mono text-[11px] text-muted">
             Next:{' '}
-            <span className={leg.to.home ? 'text-home' : leg.to.us ? 'text-reunion' : 'text-ink-2'}>
+            <span className={leg.to.carlos ? 'text-carlos' : leg.to.us ? 'text-reunion' : 'text-ink-2'}>
               {leg.to.name}
             </span>{' '}
             <span className="tnum">

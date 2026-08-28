@@ -2,48 +2,48 @@ import type { ReactElement } from 'react'
 import { shipState } from '../lib/voyage'
 import { clockInZone, longDate, shortDate } from '../lib/format'
 
-const HOME_TZ = 'America/New_York'
+const CARLOS_TZ = 'America/New_York'
 
-/** The one sentence that answers "where is she", plus the two clocks that matter. */
+/** The one sentence that answers "where is the ship", plus the two clocks that matter. */
 export function NowReport({ now }: { now: Date }) {
   const state = shipState(now)
 
   let sentence: ReactElement
   let sub: string | undefined
-  let herTz: string | undefined
+  let shipTz: string | undefined
 
   switch (state.kind) {
     case 'not-started':
       sentence = (
         <>
-          She boards in {state.firstPort.name} on{' '}
+          Voyage begins in {state.firstPort.name} on{' '}
           <span className="text-brass">{shortDate(state.firstPort.date)}</span>.
         </>
       )
-      herTz = state.firstPort.tz
+      shipTz = state.firstPort.tz
       break
     case 'in-port':
       sentence = (
         <>
-          She&rsquo;s in{' '}
-          <span className={state.port.home ? 'text-home' : 'text-brass'}>{state.port.name}</span>{' '}
+          Docked in{' '}
+          <span className={state.port.carlos ? 'text-carlos' : 'text-brass'}>{state.port.name}</span>{' '}
           today.
         </>
       )
       sub = `${state.port.flag} ${state.port.region}`
-      herTz = state.port.tz
+      shipTz = state.port.tz
       break
     case 'at-sea':
       sentence = (
         <>
-          She&rsquo;s at sea, bound for{' '}
+          At sea, bound for{' '}
           <span className="text-brass">{state.to.name}</span>.
         </>
       )
       sub = `Departed ${state.from.name} · arrives ${longDate(state.to.date)} · ${Math.round(
         state.progress * 100,
       )}% across`
-      herTz = state.to.tz
+      shipTz = state.to.tz
       break
     case 'ended':
       sentence = <>The entered schedule ends after {state.lastPort.name}.</>
@@ -60,10 +60,10 @@ export function NowReport({ now }: { now: Date }) {
         {sub && <p className="mt-sm max-w-[60ch] text-sm text-muted sm:text-base">{sub}</p>}
       </div>
 
-      {herTz && (
+      {shipTz && (
         <div className="flex gap-lg border-t border-rule pt-sm lg:border-t-0 lg:pt-0">
-          <Clock label="Her time" tz={herTz} now={now} tone="text-brass" />
-          <Clock label="Your time" tz={HOME_TZ} now={now} tone="text-home" />
+          <Clock label="Ship time" tz={shipTz} now={now} tone="text-brass" />
+          <Clock label="Carlos" tz={CARLOS_TZ} now={now} tone="text-carlos" />
         </div>
       )}
     </div>

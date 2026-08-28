@@ -20,8 +20,8 @@
   /* Semantic accents */
   --qm2-sea:     oklch(45.2% 0.131 252.0);  /* the route, the water */
   --qm2-brass:   oklch(49.0% 0.101 68.4);   /* the ship, the present moment */
-  --qm2-reunion: oklch(45.3% 0.208 306.6);  /* a day she is reachable */
-  --qm2-home:    oklch(47.5% 0.111 155.9);  /* Boston */
+  --qm2-reunion: oklch(45.3% 0.208 306.6);  /* a day the ship is reachable */
+  --qm2-carlos:  oklch(47.5% 0.111 155.9);  /* where Carlos is (Boston) */
   --qm2-reunion-wash: oklch(92.0% 0.045 306.6);
   --qm2-brass-wash:   oklch(93.0% 0.035 84.0);
   --qm2-focus:   oklch(45.2% 0.131 252.0);
@@ -42,7 +42,7 @@
   --qm2-sea:     oklch(76.2% 0.114 239.8);
   --qm2-brass:   oklch(81.0% 0.116 84.8);
   --qm2-reunion: oklch(77.2% 0.128 311.1);
-  --qm2-home:    oklch(79.1% 0.111 160.6);
+  --qm2-carlos:  oklch(79.1% 0.111 160.6);
   --qm2-reunion-wash: oklch(30.0% 0.070 311.0);
   --qm2-brass-wash:   oklch(30.0% 0.055 84.8);
   --qm2-focus:   oklch(76.2% 0.114 239.8);

@@ -12,8 +12,8 @@ function coord(value: number, pos: string, neg: string): string {
 }
 
 /**
- * Two panels, side by side: exactly where she is, and exactly where she's
- * going next. Everything here is derived from the schedule.
+ * Two panels, side by side: exactly where the ship is, and exactly where
+ * it's going next. Everything here is derived from the schedule.
  */
 export function PositionBand({ now }: { now: Date }) {
   const state = shipState(now)
@@ -24,10 +24,10 @@ export function PositionBand({ now }: { now: Date }) {
 
   return (
     <div className="grid border-b border-rule lg:grid-cols-2">
-      {/* ── Where she is ───────────────────────────────────────── */}
+      {/* ── Where the ship is ──────────────────────────────────── */}
       <div className="border-b border-rule px-md py-md lg:border-r lg:border-b-0">
         <p className="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">
-          Where she is
+          Where the ship is
         </p>
 
         <p className="mt-2xs flex flex-wrap items-baseline gap-2xs">
@@ -39,7 +39,7 @@ export function PositionBand({ now }: { now: Date }) {
           />
           <span className="font-display text-3xl leading-tight font-semibold sm:text-4xl">
             {state.kind === 'in-port' ? (
-              <span className={state.port.home ? 'text-home' : 'text-brass'}>
+              <span className={state.port.carlos ? 'text-carlos' : 'text-brass'}>
                 Alongside in {state.port.name}
               </span>
             ) : state.kind === 'at-sea' ? (
@@ -86,7 +86,7 @@ export function PositionBand({ now }: { now: Date }) {
         )}
       </div>
 
-      {/* ── Where she's going ──────────────────────────────────── */}
+      {/* ── Where it's going ───────────────────────────────────── */}
       <div className="px-md py-md">
         <p className="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">
           Next destination
@@ -100,7 +100,7 @@ export function PositionBand({ now }: { now: Date }) {
               </span>
               <span
                 className={`font-display text-3xl leading-tight font-semibold sm:text-4xl ${
-                  leg.to.home ? 'text-home' : leg.to.us ? 'text-reunion' : 'text-ink'
+                  leg.to.carlos ? 'text-carlos' : leg.to.us ? 'text-reunion' : 'text-ink'
                 }`}
               >
                 {leg.to.name}
@@ -108,10 +108,10 @@ export function PositionBand({ now }: { now: Date }) {
               {leg.to.us && (
                 <span
                   className={`self-center px-3xs font-mono text-[10px] tracking-[0.08em] uppercase ${
-                    leg.to.home ? 'border border-home text-home' : 'bg-reunion-wash text-reunion'
+                    leg.to.carlos ? 'border border-carlos text-carlos' : 'bg-reunion-wash text-reunion'
                   }`}
                 >
-                  {leg.to.home ? 'home' : 'you can reach her'}
+                  {leg.to.carlos ? 'Carlos' : 'you can meet'}
                 </span>
               )}
             </p>
