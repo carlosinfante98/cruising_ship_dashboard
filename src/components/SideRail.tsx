@@ -82,7 +82,7 @@ export function SideRail({ now, active }: { now: Date; active?: string }) {
           ['MMSI', SHIP.mmsi],
           ['Call sign', SHIP.callSign],
           ['Flag', SHIP.flag],
-          ['Ship time', state.kind === 'in-port' ? clockInZone(now, state.port.tz) : '—'],
+          ['Nati time', state.kind === 'in-port' ? clockInZone(now, state.port.tz) : '—'],
         ].map(([k, v]) => (
           <div key={k} className="flex justify-between gap-2xs border-b border-rule/60 py-3xs">
             <dt className="tracking-[0.1em] text-muted uppercase">{k}</dt>
