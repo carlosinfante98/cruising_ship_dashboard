@@ -1,12 +1,12 @@
 import type { ReactElement } from 'react'
 import { shipState } from '../lib/voyage'
 import { clockInZone, longDate, shortDate } from '../lib/format'
-
-const CARLOS_TZ = 'America/New_York'
+import { useCarlosTz, CARLOS_CITIES } from '../lib/useCarlosTz'
 
 /** The one sentence that answers "where is the ship", plus the two clocks that matter. */
 export function NowReport({ now }: { now: Date }) {
   const state = shipState(now)
+  const [carlosTz, setCarlosTz] = useCarlosTz()
 
   let sentence: ReactElement
   let sub: string | undefined
@@ -63,7 +63,16 @@ export function NowReport({ now }: { now: Date }) {
       {shipTz && (
         <div className="flex gap-lg border-t border-rule pt-sm lg:border-t-0 lg:pt-0">
           <Clock label="Nati time" tz={shipTz} now={now} tone="text-brass" />
-          <Clock label="Carlos" tz={CARLOS_TZ} now={now} tone="text-carlos" />
+          {/* Boston stays "home" everywhere else in the app (Reunion, Places) —
+              this only lets Carlos see his own current city, for whenever
+              he's travelling and Boston isn't where his own clock reads. */}
+          <Clock
+            label="Carlos"
+            tz={carlosTz}
+            now={now}
+            tone="text-carlos"
+            citySelect={{ value: carlosTz, onChange: setCarlosTz, options: CARLOS_CITIES }}
+          />
         </div>
       )}
     </div>
@@ -75,11 +84,17 @@ function Clock({
   tz,
   now,
   tone,
+  citySelect,
 }: {
   label: string
   tz: string
   now: Date
   tone: string
+  citySelect?: {
+    value: string
+    onChange: (tz: string) => void
+    options: readonly { tz: string; label: string }[]
+  }
 }) {
   return (
     <div>
@@ -87,7 +102,22 @@ function Clock({
       <p className={`tnum mt-3xs font-display text-3xl leading-none font-semibold ${tone}`}>
         {clockInZone(now, tz)}
       </p>
-      <p className="mt-3xs font-mono text-[10px] text-muted">{tz.split('/')[1]?.replace('_', ' ')}</p>
+      {citySelect ? (
+        <select
+          aria-label="Your current city"
+          value={citySelect.value}
+          onChange={(e) => citySelect.onChange(e.target.value)}
+          className="mt-3xs border-0 bg-transparent p-0 font-mono text-[10px] text-muted underline decoration-dotted underline-offset-2 hover:text-ink focus-visible:text-ink"
+        >
+          {citySelect.options.map((c) => (
+            <option key={c.tz} value={c.tz}>
+              {c.label}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <p className="mt-3xs font-mono text-[10px] text-muted">{tz.split('/')[1]?.replace('_', ' ')}</p>
+      )}
     </div>
   )
 }
