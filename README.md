@@ -41,12 +41,14 @@ your CARTO dashboard so it only works from your GitHub Pages domain.
 
 ## Architecture
 
-- **`src/lib/itinerary.ts`** — single source of truth. ~32 port calls (Aug 25 – Nov 30,
-  2026 entered so far) with date, optional end date for overnight stays, name, region,
-  flag, IANA timezone, lat/lon, and flags: `us` (reachable without leaving the country),
-  `carlos` (Boston, where Carlos is based), `turnaround` (guests swap, medical staff
-  remain aboard). `VOYAGES` groups ports into legs. Sourced from Cunard's published
-  itineraries, cross-checked against the handwritten schedule kept aboard.
+- **`src/lib/itinerary.ts`** — single source of truth. 74 port calls, Aug 25, 2026 –
+  Mar 28, 2027 (the full documented contract) with date, optional end date for
+  overnight stays, name, region, flag, IANA timezone, lat/lon, and flags: `us`
+  (reachable without leaving the country), `carlos` (Boston, where Carlos is based),
+  `turnaround` (guests swap, medical staff remain aboard). `VOYAGES` groups ports into
+  22 legs; `scheduleMonths()` derives the calendar months touched, for the log's month
+  filter. Sourced from Cunard's published itineraries, cross-checked against the
+  handwritten schedule kept aboard.
 - **`src/lib/voyage.ts`** — pure schedule logic, no React/DOM: `shipState()`
   (in-port / at-sea / not-started / ended), `buildTimeline()` (ports grouped by voyage
   with sea-day gaps and a "you are here" marker), `nextUsPort()` and `waitProgress()`
@@ -64,7 +66,7 @@ your CARTO dashboard so it only works from your GitHub Pages domain.
   VesselFinder map keyed on the IMO), `StatStrip` (four figures, each summed or
   counted from the itinerary — nothing estimated), `Reunion` (countdown, wait
   progress, the US calls after this one), `Timeline` (the log, set in almanac columns,
-  filterable US-only / hide-past), `Colophon` (sources and ship's papers).
+  filterable by month, US-only, and hide-past), `Colophon` (sources and ship's papers).
 
 ## Design system
 
@@ -116,8 +118,10 @@ Pages once in repo settings: **Settings → Pages → Source: GitHub Actions**.
 
 ## Updating the schedule
 
-Everything renders from `src/lib/itinerary.ts`. To extend past Nov 30: append `Port`
-entries (ISO dates, port-local calendar days; add `end` for overnight stays; set `us`
-on any call on US soil) and the corresponding `VOYAGES` legs, bump `SCHEDULE_END`,
-done. A note on `us`: St Thomas (USVI) is flagged reachable since it's US soil — no
-passport needed — even though it isn't highlighted in the source notes.
+Everything renders from `src/lib/itinerary.ts`. To extend past Mar 28, 2027: append
+`Port` entries (ISO dates, port-local calendar days; add `end` for overnight stays;
+set `us` on any call on US soil) and the corresponding `VOYAGES` legs, bump
+`SCHEDULE_END`, done — `scheduleMonths()` picks up any new months automatically, no
+separate list to maintain. A note on `us`: St Thomas (USVI) is flagged reachable
+since it's US soil — no passport needed — even though it isn't highlighted in the
+source notes.
