@@ -43,12 +43,16 @@ your CARTO dashboard so it only works from your GitHub Pages domain.
 
 - **`src/lib/itinerary.ts`** — single source of truth. 74 port calls, Aug 25, 2026 –
   Mar 28, 2027 (the full documented contract) with date, optional end date for
-  overnight stays, name, region, flag, IANA timezone, lat/lon, and flags: `us`
-  (reachable without leaving the country), `carlos` (Boston, where Carlos is based),
-  `turnaround` (guests swap, medical staff remain aboard). `VOYAGES` groups ports into
-  22 legs; `scheduleMonths()` derives the calendar months touched, for the log's month
-  filter. Sourced from Cunard's published itineraries, cross-checked against the
-  handwritten schedule kept aboard.
+  overnight stays, name, region, `country`, flag, IANA timezone, lat/lon, and flags:
+  `us` (reachable without leaving the country), `carlos` (Boston, where Carlos is
+  based), `turnaround` (guests swap, medical staff remain aboard). `country` is kept
+  separate from the free-text `region` (which mixes sub-region and country
+  inconsistently, e.g. "Nordfjord, Norway") specifically so the Places section can
+  count reliably — territories (US/British Virgin Islands, Sint Maarten, St Kitts &
+  Nevis) are counted as their own entries, matching how a travelled itinerary is
+  actually tallied. `VOYAGES` groups ports into 22 legs; `scheduleMonths()` derives
+  the calendar months touched, for the log's month filter. Sourced from Cunard's
+  published itineraries, cross-checked against the handwritten schedule kept aboard.
 - **`src/lib/voyage.ts`** — pure schedule logic, no React/DOM: `shipState()`
   (in-port / at-sea / not-started / ended), `buildTimeline()` (ports grouped by voyage
   with sea-day gaps and a "you are here" marker), `nextUsPort()` and `waitProgress()`
@@ -66,7 +70,9 @@ your CARTO dashboard so it only works from your GitHub Pages domain.
   VesselFinder map keyed on the IMO), `StatStrip` (four figures, each summed or
   counted from the itinerary — nothing estimated), `Reunion` (countdown, wait
   progress, the US calls after this one), `Timeline` (the log, set in almanac columns,
-  filterable by month, US-only, and hide-past), `Colophon` (sources and ship's papers).
+  filterable by month, US-only, and hide-past), `Places` (countries and cities
+  checked off against the full schedule, with a per-place visit count for repeat
+  calls), `Colophon` (sources and ship's papers).
 
 ## Design system
 

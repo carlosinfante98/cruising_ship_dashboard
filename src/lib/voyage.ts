@@ -309,3 +309,70 @@ export function nextLeg(now: Date): NextLeg | undefined {
     stillAlongside,
   }
 }
+
+export interface PlaceVisit {
+  name: string
+  flag: string
+  /** Total scheduled calls to this place across the whole entered schedule */
+  visits: number
+  /** How many of those calls have already happened (arrival <= now) */
+  visited: number
+  /** ISO date of the first call to this place */
+  firstDate: string
+}
+
+function groupPlaces(now: Date, keyOf: (p: Port) => string): PlaceVisit[] {
+  const byName = new Map<string, PlaceVisit>()
+  for (const port of PORTS) {
+    const key = keyOf(port)
+    const already = arrivalOf(port) <= now
+    const existing = byName.get(key)
+    if (existing) {
+      existing.visits += 1
+      if (already) existing.visited += 1
+      if (port.date < existing.firstDate) existing.firstDate = port.date
+    } else {
+      byName.set(key, {
+        name: key,
+        flag: port.flag,
+        visits: 1,
+        visited: already ? 1 : 0,
+        firstDate: port.date,
+      })
+    }
+  }
+  return [...byName.values()].sort((a, b) => a.firstDate.localeCompare(b.firstDate))
+}
+
+/** Every distinct city/port name in the schedule, with how many times it's called at. */
+export function cityVisits(now: Date): PlaceVisit[] {
+  return groupPlaces(now, (p) => p.name)
+}
+
+/** Every distinct country (territories counted separately — see `Port.country`). */
+export function countryVisits(now: Date): PlaceVisit[] {
+  return groupPlaces(now, (p) => p.country)
+}
+
+export interface PlacesSummary {
+  countriesVisited: number
+  countriesTotal: number
+  citiesVisited: number
+  citiesTotal: number
+  countries: PlaceVisit[]
+  cities: PlaceVisit[]
+}
+
+/** Countries/cities reached so far vs. the full entered schedule, plus the per-place tally. */
+export function placesSummary(now: Date): PlacesSummary {
+  const countries = countryVisits(now)
+  const cities = cityVisits(now)
+  return {
+    countriesVisited: countries.filter((c) => c.visited > 0).length,
+    countriesTotal: countries.length,
+    citiesVisited: cities.filter((c) => c.visited > 0).length,
+    citiesTotal: cities.length,
+    countries,
+    cities,
+  }
+}
