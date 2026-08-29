@@ -7,6 +7,7 @@ export const SECTIONS = [
   { id: 'chart', label: 'Chart' },
   { id: 'reunion', label: 'Reunion' },
   { id: 'log', label: 'Log' },
+  { id: 'places', label: 'Places' },
 ] as const
 
 export const SECTION_IDS: string[] = SECTIONS.map((s) => s.id)

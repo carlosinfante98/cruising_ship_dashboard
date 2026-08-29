@@ -7,6 +7,7 @@ import { Reunion } from './components/Reunion'
 import { ShipMap } from './components/ShipMap'
 import { StatStrip } from './components/StatStrip'
 import { Timeline } from './components/Timeline'
+import { Places } from './components/Places'
 import { Colophon } from './components/Colophon'
 import { SECTION_IDS } from './lib/sections'
 import { useActiveSection } from './lib/useActiveSection'
@@ -52,6 +53,10 @@ export default function App() {
 
         <section id="log" className={SCROLL_MT} aria-label="The log">
           <Timeline now={now} />
+        </section>
+
+        <section id="places" className={SCROLL_MT} aria-label="Places">
+          <Places now={now} />
         </section>
 
         <Colophon />

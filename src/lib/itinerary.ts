@@ -10,6 +10,14 @@ export interface Port {
   end?: string
   name: string
   region: string
+  /**
+   * Country (or country-equivalent territory — the Virgin Islands, Sint
+   * Maarten, St Kitts & Nevis are each counted separately, matching how a
+   * travelled itinerary is actually tallied) used for the Places section's
+   * country counter. Deliberately separate from `region`, which is just
+   * display text and mixes sub-region and country inconsistently.
+   */
+  country: string
   flag: string
   /** IANA timezone of the port */
   tz: string
@@ -45,7 +53,7 @@ export const SCHEDULE_START = '2026-08-25'
 /** Last day currently entered — the full documented contract, Aug 2026 – Mar 2027 */
 export const SCHEDULE_END = '2027-03-28'
 
-const UK = { region: 'England', flag: '\u{1F1EC}\u{1F1E7}', tz: 'Europe/London' }
+const UK = { region: 'England', country: 'United Kingdom', flag: '\u{1F1EC}\u{1F1E7}', tz: 'Europe/London' }
 const southampton = (date: string, extra: Partial<Port> = {}): Port => ({
   date,
   name: 'Southampton',
@@ -59,6 +67,7 @@ const newYork = (date: string): Port => ({
   date,
   name: 'New York',
   region: 'Brooklyn Cruise Terminal, USA',
+  country: 'United States',
   flag: '\u{1F1FA}\u{1F1F8}',
   tz: 'America/New_York',
   lat: 40.682,
@@ -70,6 +79,7 @@ const hamburg = (date: string): Port => ({
   date,
   name: 'Hamburg',
   region: 'Germany',
+  country: 'Germany',
   flag: '\u{1F1E9}\u{1F1EA}',
   tz: 'Europe/Berlin',
   lat: 53.5459,
@@ -79,6 +89,7 @@ const zeebrugge = (date: string): Port => ({
   date,
   name: 'Zeebrugge',
   region: 'Bruges, Belgium',
+  country: 'Belgium',
   flag: '\u{1F1E7}\u{1F1EA}',
   tz: 'Europe/Brussels',
   lat: 51.3311,
@@ -88,6 +99,7 @@ const rotterdam = (date: string, extra: Partial<Port> = {}): Port => ({
   date,
   name: 'Rotterdam',
   region: 'The Netherlands',
+  country: 'Netherlands',
   flag: '\u{1F1F3}\u{1F1F1}',
   tz: 'Europe/Amsterdam',
   lat: 51.9054,
@@ -98,6 +110,7 @@ const philipsburg = (date: string): Port => ({
   date,
   name: 'Philipsburg',
   region: 'Sint Maarten',
+  country: 'Sint Maarten',
   flag: '\u{1F1F8}\u{1F1FD}',
   tz: 'America/Lower_Princes',
   lat: 18.0237,
@@ -107,6 +120,7 @@ const tortola = (date: string): Port => ({
   date,
   name: 'Tortola',
   region: 'British Virgin Islands',
+  country: 'British Virgin Islands',
   flag: '\u{1F1FB}\u{1F1EC}',
   tz: 'America/Tortola',
   lat: 18.4207,
@@ -116,6 +130,7 @@ const basseterre = (date: string): Port => ({
   date,
   name: 'Basseterre',
   region: 'Port Zante, St Kitts & Nevis',
+  country: 'St Kitts & Nevis',
   flag: '\u{1F1F0}\u{1F1F3}',
   tz: 'America/St_Kitts',
   lat: 17.2948,
@@ -125,6 +140,7 @@ const bridgetown = (date: string, extra: Partial<Port> = {}): Port => ({
   date,
   name: 'Bridgetown',
   region: 'Barbados',
+  country: 'Barbados',
   flag: '\u{1F1E7}\u{1F1E7}',
   tz: 'America/Barbados',
   lat: 13.0969,
@@ -135,6 +151,7 @@ const castries = (date: string): Port => ({
   date,
   name: 'Castries',
   region: 'St Lucia',
+  country: 'St Lucia',
   flag: '\u{1F1F1}\u{1F1E8}',
   tz: 'America/St_Lucia',
   lat: 14.0101,
@@ -144,6 +161,7 @@ const roseau = (date: string): Port => ({
   date,
   name: 'Roseau',
   region: 'Dominica',
+  country: 'Dominica',
   flag: '\u{1F1E9}\u{1F1F2}',
   tz: 'America/Dominica',
   lat: 15.3092,
@@ -153,6 +171,7 @@ const funchal = (date: string, extra: Partial<Port> = {}): Port => ({
   date,
   name: 'Funchal',
   region: 'Madeira, Portugal',
+  country: 'Portugal',
   flag: '\u{1F1F5}\u{1F1F9}',
   tz: 'Atlantic/Madeira',
   lat: 32.6669,
@@ -163,6 +182,7 @@ const tenerife = (date: string): Port => ({
   date,
   name: 'Santa Cruz de Tenerife',
   region: 'Canary Islands, Spain',
+  country: 'Spain',
   flag: '\u{1F1EA}\u{1F1F8}',
   tz: 'Atlantic/Canary',
   lat: 28.4636,
@@ -172,6 +192,7 @@ const lisbon = (date: string, extra: Partial<Port> = {}): Port => ({
   date,
   name: 'Lisbon',
   region: 'Portugal',
+  country: 'Portugal',
   flag: '\u{1F1F5}\u{1F1F9}',
   tz: 'Europe/Lisbon',
   lat: 38.7223,
@@ -182,6 +203,7 @@ const bergen = (date: string): Port => ({
   date,
   name: 'Bergen',
   region: 'Norway',
+  country: 'Norway',
   flag: '\u{1F1F3}\u{1F1F4}',
   tz: 'Europe/Oslo',
   lat: 60.3913,
@@ -192,20 +214,20 @@ export const PORTS: Port[] = [
   southampton('2026-08-25'),
   hamburg('2026-08-27'),
   bergen('2026-08-29'),
-  { date: '2026-08-30', name: 'Olden', region: 'Nordfjord, Norway', flag: '\u{1F1F3}\u{1F1F4}', tz: 'Europe/Oslo', lat: 61.8344, lon: 6.8064 },
-  { date: '2026-08-31', name: 'Ålesund', region: 'Norway', flag: '\u{1F1F3}\u{1F1F4}', tz: 'Europe/Oslo', lat: 62.4722, lon: 6.1549 },
+  { date: '2026-08-30', name: 'Olden', region: 'Nordfjord, Norway', country: 'Norway', flag: '\u{1F1F3}\u{1F1F4}', tz: 'Europe/Oslo', lat: 61.8344, lon: 6.8064 },
+  { date: '2026-08-31', name: 'Ålesund', region: 'Norway', country: 'Norway', flag: '\u{1F1F3}\u{1F1F4}', tz: 'Europe/Oslo', lat: 62.4722, lon: 6.1549 },
   hamburg('2026-09-02'),
   zeebrugge('2026-09-04'),
   southampton('2026-09-05'),
   newYork('2026-09-12'),
   southampton('2026-09-19'),
   newYork('2026-09-26'),
-  { date: '2026-09-29', name: 'Boston', region: 'Massachusetts, USA', flag: '\u{1F1FA}\u{1F1F8}', tz: 'America/New_York', lat: 42.3467, lon: -71.0322, us: true, carlos: true },
-  { date: '2026-10-01', name: 'Sydney', region: 'Nova Scotia, Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Glace_Bay', lat: 46.1368, lon: -60.1942 },
-  { date: '2026-10-03', end: '2026-10-04', name: 'Quebec City', region: 'Quebec, Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Toronto', lat: 46.8139, lon: -71.208 },
-  { date: '2026-10-06', name: 'Saguenay', region: 'Quebec, Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Toronto', lat: 48.3352, lon: -70.877 },
-  { date: '2026-10-07', name: 'Sept-Îles', region: 'Quebec, Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Toronto', lat: 50.2001, lon: -66.3821 },
-  { date: '2026-10-09', name: 'Halifax', region: 'Nova Scotia, Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Halifax', lat: 44.6488, lon: -63.5752 },
+  { date: '2026-09-29', name: 'Boston', region: 'Massachusetts, USA', country: 'United States', flag: '\u{1F1FA}\u{1F1F8}', tz: 'America/New_York', lat: 42.3467, lon: -71.0322, us: true, carlos: true },
+  { date: '2026-10-01', name: 'Sydney', region: 'Nova Scotia, Canada', country: 'Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Glace_Bay', lat: 46.1368, lon: -60.1942 },
+  { date: '2026-10-03', end: '2026-10-04', name: 'Quebec City', region: 'Quebec, Canada', country: 'Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Toronto', lat: 46.8139, lon: -71.208 },
+  { date: '2026-10-06', name: 'Saguenay', region: 'Quebec, Canada', country: 'Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Toronto', lat: 48.3352, lon: -70.877 },
+  { date: '2026-10-07', name: 'Sept-Îles', region: 'Quebec, Canada', country: 'Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Toronto', lat: 50.2001, lon: -66.3821 },
+  { date: '2026-10-09', name: 'Halifax', region: 'Nova Scotia, Canada', country: 'Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Halifax', lat: 44.6488, lon: -63.5752 },
   newYork('2026-10-11'),
   southampton('2026-10-18'),
   hamburg('2026-10-20'),
@@ -216,7 +238,7 @@ export const PORTS: Port[] = [
   rotterdam('2026-11-08', { end: '2026-11-09' }),
   southampton('2026-11-10'),
   newYork('2026-11-17'),
-  { date: '2026-11-21', name: 'St Thomas', region: 'US Virgin Islands', flag: '\u{1F1FB}\u{1F1EE}', tz: 'America/St_Thomas', lat: 18.3419, lon: -64.9307, us: true },
+  { date: '2026-11-21', name: 'St Thomas', region: 'US Virgin Islands', country: 'US Virgin Islands', flag: '\u{1F1FB}\u{1F1EE}', tz: 'America/St_Thomas', lat: 18.3419, lon: -64.9307, us: true },
   tortola('2026-11-22'),
   basseterre('2026-11-23'),
   philipsburg('2026-11-24'),
@@ -224,7 +246,7 @@ export const PORTS: Port[] = [
 
   // ── Dec 2026: Southampton, Le Havre & Low Countries, then west to NYC ──
   southampton('2026-12-05'),
-  { date: '2026-12-06', name: 'Le Havre', region: 'France (for Paris)', flag: '\u{1F1EB}\u{1F1F7}', tz: 'Europe/Paris', lat: 49.4944, lon: 0.1079 },
+  { date: '2026-12-06', name: 'Le Havre', region: 'France (for Paris)', country: 'France', flag: '\u{1F1EB}\u{1F1F7}', tz: 'Europe/Paris', lat: 49.4944, lon: 0.1079 },
   zeebrugge('2026-12-08'),
   rotterdam('2026-12-09', { end: '2026-12-10' }),
   southampton('2026-12-12'),
@@ -245,33 +267,33 @@ export const PORTS: Port[] = [
   tortola('2027-01-22'),
   bridgetown('2027-01-24', { end: '2027-01-25' }),
   castries('2027-01-27'),
-  { date: '2027-01-28', name: 'St Georges', region: 'Grenada', flag: '\u{1F1EC}\u{1F1E9}', tz: 'America/Grenada', lat: 12.0561, lon: -61.7488 },
+  { date: '2027-01-28', name: 'St Georges', region: 'Grenada', country: 'Grenada', flag: '\u{1F1EC}\u{1F1E9}', tz: 'America/Grenada', lat: 12.0561, lon: -61.7488 },
   roseau('2027-01-29'),
   basseterre('2027-01-30'),
-  { date: '2027-02-01', name: 'Puerto Plata', region: 'Dominican Republic', flag: '\u{1F1E9}\u{1F1F4}', tz: 'America/Santo_Domingo', lat: 19.7934, lon: -70.6884 },
+  { date: '2027-02-01', name: 'Puerto Plata', region: 'Dominican Republic', country: 'Dominican Republic', flag: '\u{1F1E9}\u{1F1F4}', tz: 'America/Santo_Domingo', lat: 19.7934, lon: -70.6884 },
   philipsburg('2027-02-03'),
   tenerife('2027-02-10'),
   southampton('2027-02-14'),
 
   // ── Iberian getaway, Southampton round trip ──
-  { date: '2027-02-16', name: 'Vigo', region: 'Galicia, Spain', flag: '\u{1F1EA}\u{1F1F8}', tz: 'Europe/Madrid', lat: 42.2406, lon: -8.7207 },
+  { date: '2027-02-16', name: 'Vigo', region: 'Galicia, Spain', country: 'Spain', flag: '\u{1F1EA}\u{1F1F8}', tz: 'Europe/Madrid', lat: 42.2406, lon: -8.7207 },
   lisbon('2027-02-17', { end: '2027-02-18' }),
   southampton('2027-02-21'),
 
   // ── Atlantic Islands & West Africa loop, Southampton round trip ──
-  { date: '2027-02-23', name: 'Ferrol', region: 'Galicia, Spain', flag: '\u{1F1EA}\u{1F1F8}', tz: 'Europe/Madrid', lat: 43.4832, lon: -8.2369 },
+  { date: '2027-02-23', name: 'Ferrol', region: 'Galicia, Spain', country: 'Spain', flag: '\u{1F1EA}\u{1F1F8}', tz: 'Europe/Madrid', lat: 43.4832, lon: -8.2369 },
   funchal('2027-02-26', { end: '2027-02-27' }),
-  { date: '2027-03-02', name: 'Dakar', region: 'Senegal', flag: '\u{1F1F8}\u{1F1F3}', tz: 'Africa/Dakar', lat: 14.7167, lon: -17.4677 },
-  { date: '2027-03-04', end: '2027-03-05', name: 'Mindelo', region: 'São Vicente, Cape Verde', flag: '\u{1F1E8}\u{1F1FB}', tz: 'Atlantic/Cape_Verde', lat: 16.8901, lon: -24.9805 },
+  { date: '2027-03-02', name: 'Dakar', region: 'Senegal', country: 'Senegal', flag: '\u{1F1F8}\u{1F1F3}', tz: 'Africa/Dakar', lat: 14.7167, lon: -17.4677 },
+  { date: '2027-03-04', end: '2027-03-05', name: 'Mindelo', region: 'São Vicente, Cape Verde', country: 'Cape Verde', flag: '\u{1F1E8}\u{1F1FB}', tz: 'Atlantic/Cape_Verde', lat: 16.8901, lon: -24.9805 },
   tenerife('2027-03-08'),
-  { date: '2027-03-09', name: 'Arrecife', region: 'Lanzarote, Canary Islands', flag: '\u{1F1EA}\u{1F1F8}', tz: 'Atlantic/Canary', lat: 28.963, lon: -13.5477 },
+  { date: '2027-03-09', name: 'Arrecife', region: 'Lanzarote, Canary Islands', country: 'Spain', flag: '\u{1F1EA}\u{1F1F8}', tz: 'Atlantic/Canary', lat: 28.963, lon: -13.5477 },
   lisbon('2027-03-11'),
   southampton('2027-03-14'),
 
   // ── Norwegian Fjords encore, Southampton round trip ──
-  { date: '2027-03-17', name: 'Trondheim', region: 'Norway', flag: '\u{1F1F3}\u{1F1F4}', tz: 'Europe/Oslo', lat: 63.4305, lon: 10.3951 },
-  { date: '2027-03-19', end: '2027-03-20', name: 'Tromsø', region: 'Norway', flag: '\u{1F1F3}\u{1F1F4}', tz: 'Europe/Oslo', lat: 69.6492, lon: 18.9553 },
-  { date: '2027-03-22', name: 'Åndalsnes', region: 'Norway', flag: '\u{1F1F3}\u{1F1F4}', tz: 'Europe/Oslo', lat: 62.567, lon: 7.689 },
+  { date: '2027-03-17', name: 'Trondheim', region: 'Norway', country: 'Norway', flag: '\u{1F1F3}\u{1F1F4}', tz: 'Europe/Oslo', lat: 63.4305, lon: 10.3951 },
+  { date: '2027-03-19', end: '2027-03-20', name: 'Tromsø', region: 'Norway', country: 'Norway', flag: '\u{1F1F3}\u{1F1F4}', tz: 'Europe/Oslo', lat: 69.6492, lon: 18.9553 },
+  { date: '2027-03-22', name: 'Åndalsnes', region: 'Norway', country: 'Norway', flag: '\u{1F1F3}\u{1F1F4}', tz: 'Europe/Oslo', lat: 62.567, lon: 7.689 },
   bergen('2027-03-23'),
   southampton('2027-03-26'),
   rotterdam('2027-03-27', { end: '2027-03-28' }),
