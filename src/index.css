@@ -217,11 +217,12 @@ h1, h2, h3, .display {
 
 /* Browsers don't default <button> to cursor:pointer the way they do <a> — so
    every clickable control here (theme toggle, chart tabs, log filters, the
-   Leaflet zoom control, the external VesselFinder link) gets an explicit
-   pointer, and disabled controls get an explicit not-allowed. */
+   month select, the Leaflet zoom control, the external VesselFinder link)
+   gets an explicit pointer, and disabled controls get an explicit not-allowed. */
 button:not(:disabled),
 [role='tab'],
 [role='button']:not([aria-disabled='true']),
+select:not(:disabled),
 a[href],
 summary {
   cursor: pointer;
