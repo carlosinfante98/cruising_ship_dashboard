@@ -117,3 +117,8 @@ export function distanceNm(a: LatLon, b: LatLon): number {
 export function groupedInt(n: number): string {
   return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n)
 }
+
+/** A directions link that lets Google/Apple Maps use the visitor's current location as the start. */
+export function directionsUrl(lat: number, lon: number): string {
+  return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`
+}

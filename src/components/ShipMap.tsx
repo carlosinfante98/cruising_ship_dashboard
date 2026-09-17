@@ -29,6 +29,24 @@ function token(name: string): string {
 
 type View = 'route' | 'ais'
 
+// MyShipTracking's embed script (unlike VesselFinder's, which used the
+// document-breaking `document.write`) builds an <iframe> and inserts it via
+// `insertBefore` relative to its own <script> tag — safe to inject from a
+// React effect. Config is read off `window` at script-execution time, so
+// these need to be set before the script tag is appended.
+interface MstWindow extends Window {
+  mst_width?: string
+  mst_height?: string
+  mst_border?: number
+  mst_mmsi?: string
+  mst_zoom?: number
+  mst_show_track?: number
+  mst_show_names?: number
+  mst_show_menu?: number
+  mst_show_info?: number
+  mst_scroll_wheel?: number
+}
+
 /** The chart. The page's spatial organiser — the route IS the layout. */
 export function ShipMap({ now }: { now: Date }) {
   const [view, setView] = useState<View>('route')
@@ -37,6 +55,7 @@ export function ShipMap({ now }: { now: Date }) {
   const mapRef = useRef<L.Map | null>(null)
   const tilesRef = useRef<L.TileLayer | null>(null)
   const overlayRef = useRef<L.LayerGroup | null>(null)
+  const aisContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (view !== 'route' || !containerRef.current) return
@@ -159,6 +178,33 @@ export function ShipMap({ now }: { now: Date }) {
     }
   }, [view, now, theme])
 
+  useEffect(() => {
+    const container = aisContainerRef.current
+    if (view !== 'ais' || !container) return
+
+    const w = window as MstWindow
+    w.mst_width = '100%'
+    w.mst_height = '100%'
+    w.mst_border = 0
+    w.mst_mmsi = SHIP.mmsi
+    w.mst_zoom = 5
+    w.mst_show_track = 1
+    w.mst_show_names = 1
+    w.mst_show_menu = 0
+    w.mst_show_info = 1
+    w.mst_scroll_wheel = 0
+
+    const script = document.createElement('script')
+    script.id = 'myshiptrackingscript'
+    script.src = 'https://www.myshiptracking.com/js/widgetApi.js'
+    script.async = true
+    container.appendChild(script)
+
+    return () => {
+      container.innerHTML = ''
+    }
+  }, [view])
+
   const tab = (v: View, label: string) => (
     <button
       key={v}
@@ -198,25 +244,25 @@ export function ShipMap({ now }: { now: Date }) {
         />
       ) : (
         <div>
-          <div className="flex h-[380px] w-full flex-col items-center justify-center gap-sm bg-paper-2 px-md text-center sm:h-[460px] xl:h-[560px]">
-            <p className="max-w-[46ch] font-mono text-[11px] leading-relaxed text-muted">
-              VesselFinder has retired the free embeddable map this tab relied on — every
-              request to their map endpoint now returns &ldquo;Bad request,&rdquo; including
-              the current embed code on their own site. It isn&rsquo;t a trial running out or
-              a bug in this page; it&rsquo;s a service they&rsquo;ve turned off.
-            </p>
+          <div
+            ref={aisContainerRef}
+            className="h-[380px] w-full bg-paper-2 sm:h-[460px] xl:h-[560px]"
+            aria-label={`Live AIS position of ${SHIP.name}`}
+          />
+          <p className="border-t border-rule px-md py-2xs font-mono text-[10px] leading-relaxed text-muted">
+            Live AIS is a third-party embed (MyShipTracking) reading terrestrial AIS stations
+            — it goes quiet on the mid-Atlantic crossings, same as any free tracker, and fills
+            back in once she&rsquo;s back in range of the coast.{' '}
             <a
-              href={`https://www.vesselfinder.com/vessels/details/${SHIP.imo}`}
+              href={`https://www.myshiptracking.com/vessels/queen-mary-2-mmsi-${SHIP.mmsi}-imo-${SHIP.imo}`}
               target="_blank"
               rel="noreferrer"
-              className="border border-rule-2 px-sm py-2xs font-mono text-[11px] tracking-[0.08em] text-ink uppercase underline underline-offset-2 hover:bg-paper-3 focus-visible:bg-paper-3"
+              className="whitespace-nowrap text-sea underline underline-offset-2 hover:text-ink focus-visible:text-ink"
             >
-              Open {SHIP.name} on VesselFinder ↗
-            </a>
-          </div>
-          <p className="border-t border-rule px-md py-2xs font-mono text-[10px] leading-relaxed text-muted">
-            The Route chart beside it is ours end to end, estimated from the published
-            schedule — no third party, and nothing that can go offline on us.
+              Open on MyShipTracking
+            </a>{' '}
+            if the embed above doesn&rsquo;t load — the Route chart beside it needs no third
+            party at all.
           </p>
         </div>
       )}

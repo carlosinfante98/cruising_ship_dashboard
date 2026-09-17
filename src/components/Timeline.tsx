@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { buildTimeline } from '../lib/voyage'
 import type { TimelineEntry } from '../lib/voyage'
-import { dayInZone, shortDate } from '../lib/format'
+import { dayInZone, directionsUrl, shortDate } from '../lib/format'
 import { scheduleMonths } from '../lib/itinerary'
 import type { Port } from '../lib/itinerary'
 
@@ -136,30 +136,45 @@ function PortRow({ port, here, now }: { port: Port; here: boolean; now: Date }) 
   const tone = port.carlos ? 'text-carlos' : port.us ? 'text-reunion' : 'text-ink'
   return (
     <li
-      className={`flex items-baseline gap-2xs border-b border-rule py-2xs ${
+      className={`border-b border-rule py-2xs ${
         here ? 'border-l-2 border-l-brass bg-brass-wash pl-2xs' : ''
       } ${past ? 'opacity-50' : ''} ${port.us && !here ? 'bg-reunion-wash/40' : ''}`}
     >
-      <span className="tnum w-14 shrink-0 font-mono text-[11px] text-muted">
-        {shortDate(port.date)}
-        {port.end && <span className="text-muted">+1</span>}
-      </span>
-      <span aria-hidden className="shrink-0">
-        {port.flag}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className={`font-medium ${tone}`}>{port.name}</span>
-        <span className="ml-2xs hidden text-xs text-muted sm:inline">{port.region}</span>
-      </span>
-      <span className="flex shrink-0 items-center gap-3xs font-mono text-[9px] tracking-[0.08em] uppercase">
-        {here && <span className="text-brass">here</span>}
-        {port.turnaround && <span className="text-muted">turn</span>}
-        {port.carlos ? (
-          <span className="border border-carlos px-3xs text-carlos">Carlos</span>
-        ) : port.us ? (
-          <span className="bg-reunion-wash px-3xs text-reunion">reach</span>
-        ) : null}
-      </span>
+      <div className="flex items-baseline gap-2xs">
+        <span className="tnum w-14 shrink-0 font-mono text-[11px] text-muted">
+          {shortDate(port.date)}
+          {port.end && <span className="text-muted">+1</span>}
+        </span>
+        <span aria-hidden className="shrink-0">
+          {port.flag}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className={`font-medium ${tone}`}>{port.name}</span>
+          <span className="ml-2xs hidden text-xs text-muted sm:inline">{port.region}</span>
+        </span>
+        <span className="flex shrink-0 items-center gap-3xs font-mono text-[9px] tracking-[0.08em] uppercase">
+          {here && <span className="text-brass">here</span>}
+          {port.turnaround && <span className="text-muted">turn</span>}
+          {port.carlos ? (
+            <span className="border border-carlos px-3xs text-carlos">Carlos</span>
+          ) : port.us ? (
+            <span className="bg-reunion-wash px-3xs text-reunion">reach</span>
+          ) : null}
+        </span>
+      </div>
+      {port.dock && (
+        <div className="mt-3xs flex items-baseline gap-2xs pl-14 font-mono text-[10px] text-muted">
+          <span className="min-w-0 flex-1 truncate">{port.dock.terminal}</span>
+          <a
+            href={directionsUrl(port.dock.lat, port.dock.lon)}
+            target="_blank"
+            rel="noreferrer"
+            className="shrink-0 text-sea underline underline-offset-2 hover:text-ink focus-visible:text-ink"
+          >
+            Directions ↗
+          </a>
+        </div>
+      )}
     </li>
   )
 }

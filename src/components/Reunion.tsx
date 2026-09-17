@@ -1,7 +1,7 @@
 import { PORTS } from '../lib/itinerary'
 import type { Port } from '../lib/itinerary'
 import { arrivalOf, nextUsPort, shipState, waitProgress } from '../lib/voyage'
-import { daysUntil, longDate, shortDate } from '../lib/format'
+import { daysUntil, directionsUrl, longDate, shortDate } from '../lib/format'
 
 /** The emotional centrepiece: when the ship is next reachable. */
 export function Reunion({ now }: { now: Date }) {
@@ -75,6 +75,28 @@ export function Reunion({ now }: { now: Date }) {
               <span className="tnum">{Math.round(wait.progress * 100)}%</span>
               <span>together {shortDate(port.date)}</span>
             </div>
+          </div>
+        )}
+
+        {port.dock && (
+          <div className="mt-lg border-t border-rule pt-sm">
+            <p className="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">
+              Where she docks
+            </p>
+            <p className="mt-3xs text-sm leading-relaxed">
+              <span className="font-medium">{port.dock.terminal}</span>
+              <span className="block text-muted">{port.dock.address}</span>
+            </p>
+            <a
+              href={directionsUrl(port.dock.lat, port.dock.lon)}
+              target="_blank"
+              rel="noreferrer"
+              className={`mt-2xs inline-block border px-sm py-2xs font-mono text-[11px] tracking-[0.08em] uppercase underline underline-offset-2 hover:bg-paper-2 focus-visible:bg-paper-2 ${accent} ${
+                port.carlos ? 'border-carlos' : 'border-reunion'
+              }`}
+            >
+              Get directions ↗
+            </a>
           </div>
         )}
       </div>
