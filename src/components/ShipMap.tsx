@@ -198,24 +198,25 @@ export function ShipMap({ now }: { now: Date }) {
         />
       ) : (
         <div>
-          <iframe
-            title={`Live AIS position of ${SHIP.name}`}
-            src={`https://www.vesselfinder.com/aismap?imo=${SHIP.imo}&zoom=5&names=true&track=true`}
-            className="h-[380px] w-full border-0 sm:h-[460px] xl:h-[560px]"
-            loading="lazy"
-          />
-          <p className="border-t border-rule px-md py-2xs font-mono text-[10px] leading-relaxed text-muted">
-            Live AIS is a third-party embed from VesselFinder and can be blank when their
-            widget is unavailable.{' '}
+          <div className="flex h-[380px] w-full flex-col items-center justify-center gap-sm bg-paper-2 px-md text-center sm:h-[460px] xl:h-[560px]">
+            <p className="max-w-[46ch] font-mono text-[11px] leading-relaxed text-muted">
+              VesselFinder has retired the free embeddable map this tab relied on — every
+              request to their map endpoint now returns &ldquo;Bad request,&rdquo; including
+              the current embed code on their own site. It isn&rsquo;t a trial running out or
+              a bug in this page; it&rsquo;s a service they&rsquo;ve turned off.
+            </p>
             <a
               href={`https://www.vesselfinder.com/vessels/details/${SHIP.imo}`}
               target="_blank"
               rel="noreferrer"
-              className="whitespace-nowrap text-sea underline underline-offset-2 hover:text-ink focus-visible:text-ink"
+              className="border border-rule-2 px-sm py-2xs font-mono text-[11px] tracking-[0.08em] text-ink uppercase underline underline-offset-2 hover:bg-paper-3 focus-visible:bg-paper-3"
             >
-              Open {SHIP.name} on VesselFinder
-            </a>{' '}
-            — the Route chart beside it needs no third party at all.
+              Open {SHIP.name} on VesselFinder ↗
+            </a>
+          </div>
+          <p className="border-t border-rule px-md py-2xs font-mono text-[10px] leading-relaxed text-muted">
+            The Route chart beside it is ours end to end, estimated from the published
+            schedule — no third party, and nothing that can go offline on us.
           </p>
         </div>
       )}
