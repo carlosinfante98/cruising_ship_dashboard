@@ -10,7 +10,7 @@ export function Colophon() {
     ['Schedule entered', `${shortDate(SCHEDULE_START)} – ${shortDate(SCHEDULE_END)}, 2026`],
     ['Itinerary source', 'Cunard published voyages, cross-checked against notes kept aboard'],
     ['Position', 'Estimated along the great-circle route between calls'],
-    ['Live track', 'VesselFinder AIS · basemap CARTO / OpenStreetMap'],
+    ['Live track', 'VesselFinder ship page (embed retired) · basemap CARTO / OpenStreetMap'],
   ]
 
   return (
@@ -25,8 +25,8 @@ export function Colophon() {
       </dl>
       <p className="mt-sm max-w-[70ch] font-mono text-[10px] leading-relaxed text-muted">
         A running log of the ship&rsquo;s Atlantic contract. Times are the ship&rsquo;s local time in
-        port; sea-day positions are interpolated, not observed — switch the chart to Live AIS for
-        the real fix.
+        port; sea-day positions are interpolated, not observed — VesselFinder&rsquo;s own ship
+        page has the live fix, linked from the Live AIS tab.
       </p>
     </footer>
   )

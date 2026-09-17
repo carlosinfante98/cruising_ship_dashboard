@@ -70,8 +70,9 @@ your CARTO dashboard so it only works from your GitHub Pages domain.
   Reunion countdown or the Places tally, both of which stay pinned to Boston),
   `ShipMap`
   (the chart: "Route" view with the great-circle path + estimated position on CARTO
-  tiles that swap light/dark with the theme, and "Live AIS" via an embedded
-  VesselFinder map keyed on the IMO), `StatStrip` (four figures, each summed or
+  tiles that swap light/dark with the theme, and "Live AIS", which links out to
+  VesselFinder's ship page since they retired the free embeddable map this tab
+  used to show inline), `StatStrip` (four figures, each summed or
   counted from the itinerary — nothing estimated), `Reunion` (countdown, wait
   progress, the US calls after this one), `Timeline` (the log, set in almanac columns,
   filterable by month, US-only, and hide-past), `Places` (countries and cities
