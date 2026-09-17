@@ -50,9 +50,15 @@ your CARTO dashboard so it only works from your GitHub Pages domain.
   inconsistently, e.g. "Nordfjord, Norway") specifically so the Places section can
   count reliably — territories (US/British Virgin Islands, Sint Maarten, St Kitts &
   Nevis) are counted as their own entries, matching how a travelled itinerary is
-  actually tallied. `VOYAGES` groups ports into 22 legs; `scheduleMonths()` derives
-  the calendar months touched, for the log's month filter. Sourced from Cunard's
-  published itineraries, cross-checked against the handwritten schedule kept aboard.
+  actually tallied. Every `us` call also carries `dock` — the actual pier (terminal
+  name, street address, precise lat/lon), researched per port since a city's general
+  coordinates aren't precise enough to send anyone to the right gate: Brooklyn Cruise
+  Terminal Pier 12 for New York, Flynn Cruiseport (Black Falcon) for Boston, and Crown
+  Bay — not the more commonly cited Havensight — for St Thomas, since QM2's draft
+  requires the deeper berth. `VOYAGES` groups ports into 22 legs; `scheduleMonths()`
+  derives the calendar months touched, for the log's month filter. Sourced from
+  Cunard's published itineraries, cross-checked against the handwritten schedule kept
+  aboard.
 - **`src/lib/voyage.ts`** — pure schedule logic, no React/DOM: `shipState()`
   (in-port / at-sea / not-started / ended), `buildTimeline()` (ports grouped by voyage
   with sea-day gaps and a "you are here" marker), `nextUsPort()` and `waitProgress()`
@@ -70,14 +76,17 @@ your CARTO dashboard so it only works from your GitHub Pages domain.
   Reunion countdown or the Places tally, both of which stay pinned to Boston),
   `ShipMap`
   (the chart: "Route" view with the great-circle path + estimated position on CARTO
-  tiles that swap light/dark with the theme, and "Live AIS", which links out to
-  VesselFinder's ship page since they retired the free embeddable map this tab
-  used to show inline), `StatStrip` (four figures, each summed or
+  tiles that swap light/dark with the theme, and "Live AIS", embedding MyShipTracking's
+  map inline by MMSI — terrestrial coverage, so it goes quiet on the ocean crossings
+  and fills back in near shore; VesselFinder's own embed is what this replaced, after
+  they retired the endpoint it depended on), `StatStrip` (four figures, each summed or
   counted from the itinerary — nothing estimated), `Reunion` (countdown, wait
-  progress, the US calls after this one), `Timeline` (the log, set in almanac columns,
-  filterable by month, US-only, and hide-past), `Places` (countries and cities
-  checked off against the full schedule, with a per-place visit count for repeat
-  calls), `Colophon` (sources and ship's papers).
+  progress, the US calls after this one, and — for the next one — the dock's terminal,
+  address and a directions link), `Timeline` (the log, set in almanac columns,
+  filterable by month, US-only, and hide-past, with the same dock/directions line under
+  every US call), `Places` (countries and cities checked off against the full schedule,
+  with a per-place visit count for repeat calls), `Colophon` (sources and ship's
+  papers).
 
 ## Design system
 
@@ -131,8 +140,9 @@ Pages once in repo settings: **Settings → Pages → Source: GitHub Actions**.
 
 Everything renders from `src/lib/itinerary.ts`. To extend past Mar 28, 2027: append
 `Port` entries (ISO dates, port-local calendar days; add `end` for overnight stays;
-set `us` on any call on US soil) and the corresponding `VOYAGES` legs, bump
-`SCHEDULE_END`, done — `scheduleMonths()` picks up any new months automatically, no
-separate list to maintain. A note on `us`: St Thomas (USVI) is flagged reachable
-since it's US soil — no passport needed — even though it isn't highlighted in the
-source notes.
+set `us` on any call on US soil, and `dock` with the actual terminal — city
+coordinates alone aren't enough to send someone to the right gate) and the
+corresponding `VOYAGES` legs, bump `SCHEDULE_END`, done — `scheduleMonths()` picks up
+any new months automatically, no separate list to maintain. A note on `us`: St Thomas
+(USVI) is flagged reachable since it's US soil — no passport needed — even though it
+isn't highlighted in the source notes.

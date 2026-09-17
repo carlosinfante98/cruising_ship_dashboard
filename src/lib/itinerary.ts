@@ -29,6 +29,13 @@ export interface Port {
   carlos?: boolean
   /** Guests disembark/embark; medical staff remain aboard */
   turnaround?: boolean
+  /** The actual pier — set on `us` calls so "how do I get there" has an answer */
+  dock?: {
+    terminal: string
+    address: string
+    lat: number
+    lon: number
+  }
 }
 
 export interface Voyage {
@@ -74,6 +81,12 @@ const newYork = (date: string): Port => ({
   lon: -74.0107,
   us: true,
   turnaround: true,
+  dock: {
+    terminal: 'Brooklyn Cruise Terminal, Pier 12',
+    address: '72 Bowne St, Red Hook, Brooklyn, NY 11231',
+    lat: 40.682,
+    lon: -74.0107,
+  },
 })
 const hamburg = (date: string): Port => ({
   date,
@@ -222,7 +235,24 @@ export const PORTS: Port[] = [
   newYork('2026-09-12'),
   southampton('2026-09-19'),
   newYork('2026-09-26'),
-  { date: '2026-09-29', name: 'Boston', region: 'Massachusetts, USA', country: 'United States', flag: '\u{1F1FA}\u{1F1F8}', tz: 'America/New_York', lat: 42.3467, lon: -71.0322, us: true, carlos: true },
+  {
+    date: '2026-09-29',
+    name: 'Boston',
+    region: 'Massachusetts, USA',
+    country: 'United States',
+    flag: '\u{1F1FA}\u{1F1F8}',
+    tz: 'America/New_York',
+    lat: 42.343651,
+    lon: -71.03302,
+    us: true,
+    carlos: true,
+    dock: {
+      terminal: 'Flynn Cruiseport Boston (Black Falcon Terminal)',
+      address: '1 Black Falcon Ave, South Boston, MA 02210',
+      lat: 42.343651,
+      lon: -71.03302,
+    },
+  },
   { date: '2026-10-01', name: 'Sydney', region: 'Nova Scotia, Canada', country: 'Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Glace_Bay', lat: 46.1368, lon: -60.1942 },
   { date: '2026-10-03', end: '2026-10-04', name: 'Quebec City', region: 'Quebec, Canada', country: 'Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Toronto', lat: 46.8139, lon: -71.208 },
   { date: '2026-10-06', name: 'Saguenay', region: 'Quebec, Canada', country: 'Canada', flag: '\u{1F1E8}\u{1F1E6}', tz: 'America/Toronto', lat: 48.3352, lon: -70.877 },
@@ -238,7 +268,24 @@ export const PORTS: Port[] = [
   rotterdam('2026-11-08', { end: '2026-11-09' }),
   southampton('2026-11-10'),
   newYork('2026-11-17'),
-  { date: '2026-11-21', name: 'St Thomas', region: 'US Virgin Islands', country: 'US Virgin Islands', flag: '\u{1F1FB}\u{1F1EE}', tz: 'America/St_Thomas', lat: 18.3419, lon: -64.9307, us: true },
+  {
+    date: '2026-11-21',
+    name: 'St Thomas',
+    region: 'US Virgin Islands',
+    country: 'US Virgin Islands',
+    flag: '\u{1F1FB}\u{1F1EE}',
+    tz: 'America/St_Thomas',
+    lat: 18.3419,
+    lon: -64.9631,
+    us: true,
+    // QM2's draft puts her at Crown Bay, not the more commonly cited Havensight dock.
+    dock: {
+      terminal: 'Crown Bay Cruise Terminal',
+      address: 'Sub Base, Charlotte Amalie, St Thomas, USVI 00802',
+      lat: 18.3419,
+      lon: -64.9631,
+    },
+  },
   tortola('2026-11-22'),
   basseterre('2026-11-23'),
   philipsburg('2026-11-24'),
